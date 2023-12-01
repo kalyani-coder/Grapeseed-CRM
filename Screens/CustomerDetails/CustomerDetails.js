@@ -167,7 +167,7 @@ const styles = {
         padding: 15,
         borderRadius: 8,
         marginBottom: 10,
-        height: 40,
+        height: 50,
         alignItems: 'center',
         width: '80%', // Set a default width for the button
         overflow: 'hidden', // Ensure the text stays in one line
