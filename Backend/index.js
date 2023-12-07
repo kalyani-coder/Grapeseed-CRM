@@ -9,11 +9,22 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
+const multer = require('multer');
 const port = process.env.PORT || 4000
 
 // middlewares 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use('/public', express.static('public'));
 app.use(cors());
+
+const storage = multer.diskStorage({
+    destination: './public/uploads/',
+    filename: function (req, file, cb) {
+      cb(null, file.originalname);
+    }
+  });
+  
+  const upload = multer({ storage: storage });
 
 
 mongoose.connect('mongodb+srv://vedantassignment05:M9e09IV5RxLDA9uu@executive.h2o5uvn.mongodb.net/?retryWrites=true&w=majority', {
@@ -49,6 +60,3 @@ app.use('/api', apiRouter)
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 })
-.on('error', (error) => {
-    console.error('Server start error:', error);
-});

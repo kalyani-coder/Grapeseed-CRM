@@ -6,95 +6,99 @@ const EnquirySchema = new mongoose.Schema({
 
     Pan_Card :{
         type : String,
-        required : true
+        // required : true
     },
    Adhar_Card : {
     type : String,
-    required : true
+    // required : true
    },
    Cancelled_cheque : {
     type : String,
-    required : true 
+    // required : true 
    },
    uploaded_image : String,
    name  : {
     type : String,
-    required :true
+    // required :true
    }, 
    mobile_nu : {
 
     type : String,
-    required : true 
+    // required : true 
    },
    Alternative_Mobile : {
     type : String,
-    required : true 
+    // required : true 
    },
    Mother_Name : {
     type : String,
-    required : true
+    // required : true
 
    },
    Email : {
     type : String,
-    required : true 
+    // required : true 
    },
    Last_Education : {
     type : String,
-    required : true 
+    // required : true 
    },
    Married_Status : {
     type : String,
-    required : true
+    // required : true
    },
    Nominee_Name : {
      type : String,
-     required : true 
+    //  required : true 
    },
    Nominee_DOB : {
      type : String,
-     required : true 
+    //  required : true 
    },
    Nominee_Ralationship : {
     type : String,
-    required  : true
+    // required  : true
    },
    Company_Name : {
     type : String,
-    required : true
+    // required : true
    },
    Annual_Income : {
     type  : String,
-    required : true  
+    // required : true  
    },
    Industry_Name : {
     type : String,
-    reqauired : true
+    // reqauired : true
    },
    Height : {
     type : String,
-    required : true 
+    // required : true 
    },
    Weight : {
     type : String,
-    required : true 
+    // required : true 
    },
    Life_Cover : {
     type : String ,
-    required : true 
+    // required : true 
    },
    medical_History : {
     type : String,
-    required : true
+    // required : true
    },
    Employeement_Status : {
     type : String,
-    required  : true
+    // required  : true
    },
+   
    Enquiry_Date : {
     type : Date,
-    required : true
-   }
+    // required : true
+   },
+   filename: String,
+  path: String,
+  serviceImage: String,
 
 })
 
