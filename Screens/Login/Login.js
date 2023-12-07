@@ -1,34 +1,62 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Animated, Easing } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Animated, Easing, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 
-
 const Login = () => {
-    const navigation = useNavigation(); // Get the navigation prop
+    const navigation = useNavigation();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [clientEmail, setclientEmail] = useState('');
+    const [clientpassword, setclientpassword] = useState('');
     const [isAnimating, setAnimating] = useState(false);
 
     const rotateValue = useRef(new Animated.Value(0)).current;
 
-    const handleLogin = () => {
-        setAnimating(true);
-        Animated.timing(rotateValue, {
-            toValue: 1,
-            duration: 1000,
-            easing: Easing.ease,
-            useNativeDriver: false,
-        }).start(() => {
-            setAnimating(false);
-            rotateValue.setValue(0);
-            alert('Login successful!');
+    const handleLogin = async () => {
+        try {
+            setAnimating(true);
 
-            // Navigate to the Home screen
-            navigation.push('Dashboard');
-        });
+
+            const response = await fetch('http://localhost:4000/api/clients', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    clientEmail,
+                    clientpassword,
+                }),
+            });
+
+            if (response.ok) {
+                Animated.timing(rotateValue, {
+                    toValue: 1,
+                    duration: 1000,
+                    easing: Easing.ease,
+                    useNativeDriver: false,
+                }).start(() => {
+                    setAnimating(false);
+                    rotateValue.setValue(0);
+
+                    Alert.alert('Login successful!', 'Welcome to the Dashboard', [
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                navigation.push('Dashboard');
+                            },
+                        },
+                    ]);
+                });
+            } else {
+                Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
+                setAnimating(false);
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+            setAnimating(false);
+        }
     };
+
     const rotateInterpolation = rotateValue.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '360deg'],
@@ -36,7 +64,6 @@ const Login = () => {
 
     return (
         <ImageBackground
-            // source={require('../../assets/grapeseed Logo.jpeg')}
             style={styles.backgroundImage}
         >
             <View style={styles.container}>
@@ -49,7 +76,7 @@ const Login = () => {
                         placeholder="Email"
                         keyboardType="email-address"
                         autoCapitalize="none"
-                        onChangeText={(text) => setEmail(text)}
+                        onChangeText={(text) => setclientEmail(text)}
                     />
                 </View>
 
@@ -57,9 +84,9 @@ const Login = () => {
                     <Icon name="lock" size={20} style={styles.icon} />
                     <TextInput
                         style={styles.input}
-                        placeholder="Password"
+                        placeholder="password"
                         secureTextEntry
-                        onChangeText={(text) => setPassword(text)}
+                        onChangeText={(text) => setclientpassword(text)}
                     />
                 </View>
 
@@ -82,30 +109,30 @@ const styles = StyleSheet.create({
         flex: 1,
         resizeMode: 'cover',
         justifyContent: 'center',
-
     },
     container: {
         flex: 1,
         justifyContent: 'center',
         padding: 16,
-        backgroundColor: '#daa520'
+        backgroundColor: '#daa520',
     },
     loginHeading: {
         fontSize: 32,
         fontWeight: 'bold',
         marginBottom: 24,
         textAlign: 'center',
-        color: 'black', // Set text color to white for better visibility
+        color: 'black',
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 16,
-        backgroundColor: 'white', // Semi-transparent white background
+        backgroundColor: 'white',
         borderRadius: 8,
         padding: 8,
         borderWidth: 1,
-        borderColor: '#3498db', // Change the border color to match the style of CustomerDetailsScreen
+        borderColor: '#3498db',
+        color: 'black'
     },
     icon: {
         marginRight: 10,
@@ -115,10 +142,11 @@ const styles = StyleSheet.create({
         height: 40,
         color: 'white',
         paddingLeft: 8,
-        borderWidth: 0, // Remove the inner border
+        borderWidth: 0,
+        color:"black"
     },
     button: {
-        backgroundColor: '#000', // Match the color to the style of CustomerDetailsScreen
+        backgroundColor: '#000',
         padding: 10,
         alignItems: 'center',
         borderRadius: 8,
