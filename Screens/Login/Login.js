@@ -1,23 +1,28 @@
+// Import necessary modules and components
 import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Animated, Easing, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 
+// Create the Login component
 const Login = () => {
     const navigation = useNavigation();
 
+    // State variables for email, password, and animation
     const [clientEmail, setclientEmail] = useState('');
     const [clientpassword, setclientpassword] = useState('');
     const [isAnimating, setAnimating] = useState(false);
 
+    // Animated value for rotation animation
     const rotateValue = useRef(new Animated.Value(0)).current;
 
+    // Function to handle the login process
     const handleLogin = async () => {
         try {
             setAnimating(true);
 
-
-            const response = await fetch('http://localhost:4000/api/clients', {
+            // Send a POST request to your API for authentication
+            const response = await fetch('https://executive-grapeseed.onrender.com/api/clients', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -28,27 +33,41 @@ const Login = () => {
                 }),
             });
 
+            // Check if the response is successful
             if (response.ok) {
-                Animated.timing(rotateValue, {
-                    toValue: 1,
-                    duration: 1000,
-                    easing: Easing.ease,
-                    useNativeDriver: false,
-                }).start(() => {
-                    setAnimating(false);
-                    rotateValue.setValue(0);
+                const responseData = await response.json();
+                console.log(responseData);
 
-                    Alert.alert('Login successful!', 'Welcome to the Dashboard', [
-                        {
-                            text: 'OK',
-                            onPress: () => {
-                                navigation.push('Dashboard');
+                // Check if the API response indicates success
+                if (responseData.success) {
+                    Animated.timing(rotateValue, {
+                        toValue: 1,
+                        duration: 1000,
+                        easing: Easing.ease,
+                        useNativeDriver: false,
+                    }).start(() => {
+                        setAnimating(false);
+                        rotateValue.setValue(0);
+
+                        // Navigate to the 'Dashboard' screen upon successful login
+                        Alert.alert('Login successful!', 'Welcome to the Dashboard', [
+                            {
+                                text: 'OK',
+                                onPress: () => {
+                                    navigation.navigate('Dashboard');
+                                },
                             },
-                        },
-                    ]);
-                });
+                        ]);
+                    });
+                } else {
+                    // If the API response indicates failure, show an error message
+                    Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
+                    setAnimating(false);
+                }
             } else {
-                Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
+                // Handle other HTTP status codes, e.g., server errors
+                console.log('Response data:', await response.text()); // Log the response data for debugging
+                Alert.alert('Login Failed', 'Something went wrong. Please try again later.');
                 setAnimating(false);
             }
         } catch (error) {
@@ -57,15 +76,15 @@ const Login = () => {
         }
     };
 
+    // Interpolate the rotation for the animation
     const rotateInterpolation = rotateValue.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '360deg'],
     });
 
+    // Render the UI components
     return (
-        <ImageBackground
-            style={styles.backgroundImage}
-        >
+        <ImageBackground style={styles.backgroundImage}>
             <View style={styles.container}>
                 <Text style={styles.loginHeading}>Login</Text>
 
@@ -84,7 +103,7 @@ const Login = () => {
                     <Icon name="lock" size={20} style={styles.icon} />
                     <TextInput
                         style={styles.input}
-                        placeholder="password"
+                        placeholder="Password"
                         secureTextEntry
                         onChangeText={(text) => setclientpassword(text)}
                     />
@@ -104,6 +123,7 @@ const Login = () => {
     );
 };
 
+// Styles for the components
 const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
@@ -132,7 +152,7 @@ const styles = StyleSheet.create({
         padding: 8,
         borderWidth: 1,
         borderColor: '#3498db',
-        color: 'black'
+        color: 'black',
     },
     icon: {
         marginRight: 10,
@@ -143,7 +163,7 @@ const styles = StyleSheet.create({
         color: 'white',
         paddingLeft: 8,
         borderWidth: 0,
-        color:"black"
+        color: 'black',
     },
     button: {
         backgroundColor: '#000',
@@ -159,4 +179,5 @@ const styles = StyleSheet.create({
     },
 });
 
+// Export the Login component
 export default Login;

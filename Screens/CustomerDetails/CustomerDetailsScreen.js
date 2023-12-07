@@ -8,13 +8,13 @@ const CustomerDetailsScreen = ({ navigation }) => {
     const [Adhar_Card, setAdhar_Card] = useState('');
     const [Cancelled_cheque, setCancelled_cheque] = useState('');
     const [employmentStatus, setEmploymentStatus] = useState(null);
-    const [incomeDocument, setIncomeDocument] = useState('');
-    const [photograph, setPhotograph] = useState('');
+    // const [incomeDocument, setIncomeDocument] = useState('');
+    // const [photograph, setPhotograph] = useState('');
     const [animatedValue] = useState(new Animated.Value(0));
 
     const handleSaveAndNext = async () => {
         try {
-            const response = await fetch('http://localhost:4000/api/enquiry', {
+            const response = await fetch('https://executive-grapeseed.onrender.com/api/enquiry', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
