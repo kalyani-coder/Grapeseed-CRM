@@ -16,13 +16,6 @@ app.use(bodyParser.json());
 app.use(cors());
 
 
-// mongoose.connect('mongodb+srv://vedantassignment05:M9e09IV5RxLDA9uu@executive.h2o5uvn.mongodb.net/?retryWrites=true&w=majority', {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// }
-
-// )
-
 mongoose.connect('mongodb+srv://vedantassignment05:M9e09IV5RxLDA9uu@executive.h2o5uvn.mongodb.net/?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -40,12 +33,12 @@ mongoose.connect('mongodb+srv://vedantassignment05:M9e09IV5RxLDA9uu@executive.h2
 const apiRouter = express.Router();
 
 //   handle route 
-const login = require('./src/routes/ExecutiveSignup')
+const login = require('./src/routes/ExecutiveLogin')
 const enquiry = require('./src/routes/Enquiry')
 
 // handle api path 
 
-apiRouter.use('/login', login)
+apiRouter.use('/clients', login)
 apiRouter.use('/enquiry', enquiry)
 
 

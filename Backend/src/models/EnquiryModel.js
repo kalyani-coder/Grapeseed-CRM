@@ -86,6 +86,14 @@ const EnquirySchema = new mongoose.Schema({
    medical_History : {
     type : String,
     required : true
+   },
+   Employeement_Status : {
+    type : String,
+    required  : true
+   },
+   Enquiry_Date : {
+    type : Date,
+    required : true
    }
 
 })
