@@ -75,15 +75,33 @@ router.patch("/:id", async (req, res) => {
 });
 
 // Page: Delete a client by ID
+// router.delete("/:id", async (req, res) => {
+//   const clientId = req.params.id;
+//   try {
+//     const deletedClient = await Client.findByIdAndRemove(clientId);
+//     res.json(deletedClient);
+//   } catch (error) {
+//     res.status(404).json({ message: "Client not found" });
+//   }
+// });
+
+// Page: Delete a client by ID
 router.delete("/:id", async (req, res) => {
   const clientId = req.params.id;
   try {
-    const deletedClient = await Client.findByIdAndRemove(clientId);
-    res.json(deletedClient);
+    const deletedClient = await Client.findByIdAndDelete(clientId);
+
+    if (!deletedClient) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+
+    res.json({ message: "Client deleted successfully", deletedClient });
   } catch (error) {
-    res.status(404).json({ message: "Client not found" });
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 
 // get by id
 
