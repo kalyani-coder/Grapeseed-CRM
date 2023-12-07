@@ -3,13 +3,16 @@ import { Text, SafeAreaView, StyleSheet, View, TouchableOpacity, Alert, Image } 
 import { NativeBaseProvider, Box, HStack, Pressable, Center, Icon } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Card, Title, Paragraph } from 'react-native-paper';
-import CustomerDetailsScreen from './../CustomerDetails/CustomerDetails';
-import ViewInquiryPage from './../ViewEnquiry/ViewEnquiry';
-import UpdateStatusPage from './../UpdateStatus/UpdateStatus';
+import { useNavigation } from '@react-navigation/native';
+import Navbar from '../Navbar/Navbar';
+// import CustomerDetailsScreen from '../CustomerDetails/CustomerDetailsScreen';
 
 
 function Footer() {
   const [selected, setSelected] = React.useState(0);
+  // Get the navigation prop
+
+
 
   const items = [
     { name: 'Home', icon: 'home' },
@@ -17,9 +20,6 @@ function Footer() {
     { name: 'Settings', icon: 'settings' },
     // Add more items as needed
   ];
-
-
-
 
   return (
     <HStack bg="black" alignItems="center" shadow={6}>
@@ -33,7 +33,7 @@ function Footer() {
           onPress={() => setSelected(index)}
         >
           <Center>
-            <Icon mb="1" as={<MaterialIcons name={item.icon} />} color="white" size="sm" />
+            <Icon mb="1" as={<MaterialIcons name={item.icon} />} size="sm" />
             <Text color="white" fontSize="12" style={styles.footerText}>
               {item.name}
             </Text>
@@ -43,6 +43,7 @@ function Footer() {
     </HStack>
   );
 }
+
 
 const CustomCard = ({ title, subtitle, content, onPress }) => {
   return (
@@ -58,38 +59,50 @@ const CustomCard = ({ title, subtitle, content, onPress }) => {
   );
 };
 
-export default function Home() {
+export default function Dashboard() {
+  const navigation = useNavigation();
+  console.log('Navigation Object:', navigation);
   const handleCardClick1 = (message) => {
-    if (message === 'Add Enquiry') {
-      // Navigate to the desired screen (replace 'TargetScreen' with your actual screen name)
+    if (message === 'Enquiry') {
       navigation.navigate('CustomerDetailsScreen');
+
     } else {
       Alert.alert(`${message} Clicked!`);
+
       // Add your desired functionality for other cards here
     }
   };
+
+
+
+
   const handleCardClick2 = (message) => {
-    if (message === 'Edit Enquiry Status') {
-      // Navigate to the desired screen (replace 'TargetScreen' with your actual screen name)
-      navigation.navigate('ViewInquiryPage');
+    if (message === 'View Enquiry') {
+      navigation.push('ViewInquiryPage');
     } else {
       Alert.alert(`${message} Clicked!`);
       // Add your desired functionality for other cards here
     }
   };
+
+
+
+
   const handleCardClick3 = (message) => {
-    if (message === 'Edit Enquiry Status') {
-      // Navigate to the desired screen (replace 'TargetScreen' with your actual screen name)
-      navigation.navigate('UpdateStatusPage');
+    if (message === 'Update Status') {
+      navigation.push('UpdateStatusPage');
     } else {
       Alert.alert(`${message} Clicked!`);
       // Add your desired functionality for other cards here
     }
   };
+
+
+
+
   const handleCardClick4 = (message) => {
     if (message === 'Edit Enquiry Status') {
-      // Navigate to the desired screen (replace 'TargetScreen' with your actual screen name)
-      navigation.navigate('EditInquiryPage');
+      navigation.push('EditInquiryStatus');
     } else {
       Alert.alert(`${message} Clicked!`);
       // Add your desired functionality for other cards here
@@ -98,12 +111,14 @@ export default function Home() {
 
   return (
     <NativeBaseProvider>
-      <SafeAreaView style={{ ...styles.container, backgroundColor: '#979aaa' }}>
-        <Box flex={1} bg="white" safeAreaTop width="100%" alignSelf="center">
-          <Box flex={1} justifyContent="flex-end"> {/* Align the box to the bottom */}
+      <SafeAreaView style={{ ...styles.container }}>
+        <View><Navbar /></View>
+        <Box flex={1} bg="#daa520" safeAreaTop width="100%" alignSelf="center">
+          <Box flex={1} justifyContent="flex-end">
             {/* Image Section */}
             <Image
               source={{ uri: 'https://finvestfox.com/wp-content/uploads/2020/09/mutual-fund-768x432.jpg' }}
+              alt='img'
               style={styles.image}
             />
 
@@ -140,6 +155,8 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#daa520',
+
   },
   footerText: {
     color: 'white',
@@ -148,13 +165,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     margin: 10,
+    // backgroundColor: '#daa520',
+
   },
   card: {
     margin: 15,
     padding: 15,
     borderRadius: 10,
-    width: 150, // Use '100%' to take full width
-    height: 150, // Fixed height for all cards
+    width: 180,
+    height: 170,
   },
   cardTitle: {
     fontSize: 18,
@@ -165,11 +184,13 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     fontSize: 12,
-    color: 'gray',
+    // color: 'gray',
+    backgroundColor: '#daa520'
   },
   image: {
-    width: '100%', // Adjust the width as needed
-    height: 200, // Adjust the height as needed
-    resizeMode: 'cover', // Adjust the resizeMode as needed
+    width: '100%',
+    height: 220,
+    resizeMode: 'cover',
+
   },
 });

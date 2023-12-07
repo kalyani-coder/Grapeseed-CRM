@@ -98,13 +98,13 @@ const PersonalInfoPage = ({ navigation }) => {
                 dropdownTextStyle={{ fontSize: 16 }}
                 dropdownIconStyle={styles.dropdownIcon}
             />
-
+            {/* 
             <TouchableOpacity style={styles.button} onPress={handleSave}>
                 <Text style={styles.buttonText}>Save</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <TouchableOpacity style={styles.button} onPress={handleNext}>
-                <Text style={styles.buttonText}>Next</Text>
+                <Text style={styles.buttonText}>Save & Next</Text>
             </TouchableOpacity>
         </ScrollView>
     );
@@ -116,6 +116,7 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         padding: 16,
+        backgroundColor: '#daa520'
     },
     title: {
         fontSize: 20,
@@ -129,6 +130,8 @@ const styles = {
         padding: 8,
         width: '80%',
         borderRadius: 8,
+        backgroundColor: 'white'
+
     },
     dropdown: {
         height: 40,
@@ -139,14 +142,16 @@ const styles = {
         paddingRight: 30,
         width: '80%',
         borderRadius: 8,
+        backgroundColor: 'white'
     },
     dropdownIcon: {
         position: 'absolute',
         top: 10,
         right: 10,
+        color: 'black'
     },
     button: {
-        backgroundColor: '#3498db',
+        backgroundColor: 'black',
         padding: 15,
         borderRadius: 8,
         marginBottom: 10,

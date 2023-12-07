@@ -29,7 +29,7 @@ function Example() {
             onPress={() => setSelected(index)}
           >
             <Center>
-              <Icon mb="1" as={<MaterialCommunityIcons name={item.icon} />} color="white" size="sm" />
+              icon={<Icon mb="1" as={<MaterialCommunityIcons name="menu" color="white" />} size="sm" />}
               <Text color="white" fontSize="12" style={styles.footerText}>
                 {item.name}
               </Text>
@@ -54,7 +54,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#daa520',
   },
   footerText: {
     color: 'white',

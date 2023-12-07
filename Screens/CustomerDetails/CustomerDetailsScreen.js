@@ -2,16 +2,48 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Animated, Easing } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 import * as DocumentPicker from 'expo-document-picker';
-import PersonalInfoPage from './../PersonalInfoPage/PersonalInfoPage';
 
 const CustomerDetailsScreen = ({ navigation }) => {
-    const [panCard, setPanCard] = useState('');
-    const [aadharCard, setAadharCard] = useState('');
-    const [cancelledCheque, setCancelledCheque] = useState('');
+    const [Pan_Card, setPan_Card] = useState('');
+    const [Adhar_Card, setAdhar_Card] = useState('');
+    const [Cancelled_cheque, setCancelled_cheque] = useState('');
     const [employmentStatus, setEmploymentStatus] = useState(null);
     const [incomeDocument, setIncomeDocument] = useState('');
     const [photograph, setPhotograph] = useState('');
     const [animatedValue] = useState(new Animated.Value(0));
+
+    const handleSaveAndNext = async () => {
+        try {
+            const response = await fetch('http://localhost:4000/api/enquiry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    Pan_Card: Pan_Card,
+                    Adhar_Card: Adhar_Card,
+                    Cancelled_cheque: Cancelled_cheque,
+                    employmentStatus: employmentStatus,
+                    incomeDocument: incomeDocument,
+                    photograph: photograph,
+                }),
+            });
+
+            if (response.ok) {
+                // Handle success, e.g., navigate to the next screen
+                navigation.navigate('PersonalInfoPage');
+            } else {
+                // Handle error response
+                const errorData = await response.json();
+                console.error('Enquiry API error:', errorData);
+                // Display an alert or handle the error in some way
+            }
+        } catch (error) {
+            // Handle network or other errors
+            console.error('Error posting data to Enquiry API:', error);
+            // Display an alert or handle the error in some way
+        }
+    };
 
     const handleFilePick = async () => {
         try {
@@ -24,7 +56,7 @@ const CustomerDetailsScreen = ({ navigation }) => {
 
                 Animated.timing(animatedValue, {
                     toValue: 1,
-                    duration: 20000, // Slowed down the animation further
+                    duration: 20000,
                     easing: Easing.linear,
                     useNativeDriver: false,
                 }).start(() => {
@@ -41,19 +73,13 @@ const CustomerDetailsScreen = ({ navigation }) => {
             Animated.loop(
                 Animated.timing(animatedValue, {
                     toValue: 1,
-                    duration: 20000, // Slowed down the animation further
+                    duration: 20000,
                     easing: Easing.linear,
                     useNativeDriver: false,
                 })
             ).start();
         }
     }, [employmentStatus]);
-
-    const handleNext = () => {
-        navigation.navigate('PersonalInfoPage');
-    };
-
-
 
     return (
         <View style={styles.container}>
@@ -62,23 +88,22 @@ const CustomerDetailsScreen = ({ navigation }) => {
             <TextInput
                 style={styles.input}
                 placeholder="Pan Card"
-                value={panCard}
-                onChangeText={(text) => setPanCard(text)}
+                value={Pan_Card}
+                onChangeText={(text) => setPan_Card(text)}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Aadhar Card"
-                value={aadharCard}
-                onChangeText={(text) => setAadharCard(text)}
+                value={Adhar_Card}
+                onChangeText={(text) => setAdhar_Card(text)}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Cancelled Cheque"
-                value={cancelledCheque}
-                onChangeText={(text) => setCancelledCheque(text)}
+                value={Cancelled_cheque}
+                onChangeText={(text) => setCancelled_cheque(text)}
             />
 
-            {/* Employment status dropdown */}
             <ModalDropdown
                 options={['Self Employed', 'Salaried']}
                 onSelect={(index, value) => setEmploymentStatus(value)}
@@ -90,9 +115,6 @@ const CustomerDetailsScreen = ({ navigation }) => {
                 dropdownIconStyle={styles.dropdownIcon}
             />
 
-            {/* Conditional document upload fields */}
-
-            {/* File upload button */}
             <TouchableOpacity style={styles.button} onPress={handleFilePick}>
                 <Animated.Text
                     style={[
@@ -100,7 +122,7 @@ const CustomerDetailsScreen = ({ navigation }) => {
                         {
                             marginLeft: animatedValue.interpolate({
                                 inputRange: [0, 1],
-                                outputRange: ['0%', '-200%'], // Adjust the initial position based on your preference
+                                outputRange: ['0%', '-200%'],
                             }),
                         },
                     ]}
@@ -113,15 +135,10 @@ const CustomerDetailsScreen = ({ navigation }) => {
                 </Animated.Text>
             </TouchableOpacity>
 
-            {/* Display the selected file name or path */}
             {photograph ? <Text>Selected File: {photograph}</Text> : null}
 
-            {/* Submit button */}
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                <Text style={styles.buttonText}>save </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleNext}>
-                <Text style={styles.buttonText}>next</Text>
+            <TouchableOpacity style={styles.saveAndNextButton} onPress={handleSaveAndNext}>
+                <Text style={styles.buttonText}>Save & Next</Text>
             </TouchableOpacity>
         </View>
     );
@@ -133,6 +150,7 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         padding: 16,
+        backgroundColor: '#daa520',
     },
     title: {
         fontSize: 20,
@@ -146,6 +164,7 @@ const styles = {
         padding: 8,
         width: '80%',
         borderRadius: 8,
+        backgroundColor: 'white',
     },
     dropdown: {
         height: 40,
@@ -156,6 +175,7 @@ const styles = {
         paddingRight: 30,
         width: '80%',
         borderRadius: 8,
+        backgroundColor: 'white'
     },
     dropdownIcon: {
         position: 'absolute',
@@ -163,18 +183,28 @@ const styles = {
         right: 10,
     },
     button: {
-        backgroundColor: '#3498db',
+        backgroundColor: 'black',
         padding: 15,
         borderRadius: 8,
         marginBottom: 10,
         height: 50,
         alignItems: 'center',
-        width: '80%', // Set a default width for the button
-        overflow: 'hidden', // Ensure the text stays in one line
+        width: '80%',
+        overflow: 'hidden',
     },
     buttonText: {
         color: '#fff',
         fontSize: 18,
+    },
+    saveAndNextButton: {
+        backgroundColor: 'black',
+        padding: 15,
+        borderRadius: 8,
+        marginBottom: 10,
+        height: 50,
+        alignItems: 'center',
+        width: '80%',
+        overflow: 'hidden',
     },
 };
 

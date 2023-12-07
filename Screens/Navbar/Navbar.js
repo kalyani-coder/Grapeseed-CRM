@@ -6,23 +6,23 @@ import { MaterialIcons } from '@expo/vector-icons';
 const Navbar = () => {
     return (
         <HStack
-            bg="black"
-            px="1"
+            bg="white"
+            px="15"
             py="3"
             justifyContent="space-between"
             alignItems="center"
             w="100%"
+            h='50'
         >
             <HStack spaceBetween alignItems="center">
                 <Image
-                    source={{
-                        uri: 'https://th.bing.com/th/id/OIP.4dcJ_AHTJ81dikKbJ_xBtgHaGw?rs=1&pid=ImgDetMain',
-                    }}
-                    style={{ width: 30, height: 30, resizeMode: 'contain', color: 'white' }}
+                    source={require('../../assets/logo1.jpeg').default}
+
+                    style={{ width: 30, height: 30, resizeMode: 'contain' }}
                 />
             </HStack>
             <IconButton
-                icon={<Icon size="sm" as={MaterialIcons} name="menu" color="white" />}
+                icon={<Icon size="sm" as={MaterialIcons} name="menu" color="black" />}
             />
         </HStack>
     );

@@ -1,8 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Animated, Easing } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
+
 
 const Login = () => {
+    const navigation = useNavigation(); // Get the navigation prop
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isAnimating, setAnimating] = useState(false);
@@ -15,16 +19,16 @@ const Login = () => {
             toValue: 1,
             duration: 1000,
             easing: Easing.ease,
-            useNativeDriver: false, // Ensure useNativeDriver is set to false for rotation
+            useNativeDriver: false,
         }).start(() => {
-            // Reset animation and perform other actions after login
             setAnimating(false);
             rotateValue.setValue(0);
             alert('Login successful!');
-            // You can navigate to another screen or perform other actions here
+
+            // Navigate to the Home screen
+            navigation.push('Dashboard');
         });
     };
-
     const rotateInterpolation = rotateValue.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '360deg'],
@@ -32,7 +36,7 @@ const Login = () => {
 
     return (
         <ImageBackground
-            source={{ uri: 'https://example.com/your-background-image.jpg' }}
+            // source={require('../../assets/grapeseed Logo.jpeg')}
             style={styles.backgroundImage}
         >
             <View style={styles.container}>
@@ -84,6 +88,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         padding: 16,
+        backgroundColor: '#daa520'
     },
     loginHeading: {
         fontSize: 32,
@@ -96,7 +101,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 16,
-        backgroundColor: 'rgba(255, 255, 255, 0.5)', // Semi-transparent white background
+        backgroundColor: 'white', // Semi-transparent white background
         borderRadius: 8,
         padding: 8,
         borderWidth: 1,
@@ -118,7 +123,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 8,
         marginTop: 16,
-        height:50,
+        height: 50,
     },
     buttonText: {
         color: 'white',

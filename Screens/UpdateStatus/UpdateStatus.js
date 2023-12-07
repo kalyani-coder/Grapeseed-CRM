@@ -1,71 +1,122 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { Card, Title, Paragraph, Button, Menu, Divider, Provider } from 'react-native-paper';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Card, Title, Paragraph } from 'react-native-paper';
 
 const UpdateStatusPage = () => {
-    const [enquiries, setEnquiries] = useState([]);
-    const [visible, setVisible] = useState(false);
-    const [selectedEnquiry, setSelectedEnquiry] = useState(null);
+    const [showDetails, setShowDetails] = useState(false);
+    const [inquiryData, setInquiryData] = useState({});
+    const apiUrl = 'YOUR_API_ENDPOINT'; // Replace with your actual API endpoint
 
     useEffect(() => {
-        // Dummy data for testing
-        const dummyEnquiries = [
-            { id: 1, customerName: 'John Doe', status: 'Pending' },
-            { id: 2, customerName: 'Jane Doe', status: 'Approved' },
-            { id: 3, customerName: 'Bob Smith', status: 'Rejected' },
-        ];
-
-        setEnquiries(dummyEnquiries);
+        // Fetch data from the API when the component mounts
+        fetchData();
     }, []);
 
-    const openMenu = (enquiry) => {
-        setSelectedEnquiry(enquiry);
-        setVisible(true);
+    const fetchData = async () => {
+        try {
+            // Dummy data for testing
+            const dummyData = {
+                customerName: 'John Doe',
+                otherField: 'Lorem Ipsum',
+                anotherField: 'Dolor Sit Amet',
+            };
+
+            // Simulate API response delay for better testing experience
+            setTimeout(() => {
+                setInquiryData(dummyData);
+            }, 1000);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     };
 
-    const closeMenu = () => setVisible(false);
-
-    const updateStatus = (status) => {
-        // Implement logic to update the status for the selected enquiry
-        console.log(`Updating status to ${status} for enquiry: ${selectedEnquiry.customerName}`);
-        // Close the menu after updating the status
-        closeMenu();
+    const handleViewMore = () => {
+        setShowDetails(!showDetails);
     };
 
-    const renderItem = ({ item }) => (
-        <Card style={styles.card}>
-            <Card.Content>
-                <Title>{item.customerName}</Title>
-                <Paragraph>Enquiry Status: {item.status}</Paragraph>
-                <Button onPress={() => openMenu(item)}>View More</Button>
-                <Menu
-                    visible={visible && selectedEnquiry === item}
-                    onDismiss={closeMenu}
-                    anchor={<Button onPress={() => openMenu(item)}>Status</Button>}
-                >
-                    <Menu.Item onPress={() => updateStatus('Pending')} title="Pending" />
-                    <Menu.Item onPress={() => updateStatus('Approved')} title="Approved" />
-                    <Menu.Item onPress={() => updateStatus('Rejected')} title="Rejected" />
-                </Menu>
-            </Card.Content>
-        </Card>
-    );
+    const handleUpdateStatus = () => {
+        // Implement your logic for updating the status here
+        console.log('Updating status...');
+    };
 
     return (
-        <Provider>
-            <FlatList
-                data={enquiries}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderItem}
-            />
-        </Provider>
+        <ScrollView contentContainerStyle={styles.container}>
+            <Text style={styles.title}>Enquiry List</Text>
+
+            {/* Card 1 */}
+            <Card style={styles.card}>
+                <Card.Content>
+                    <Title>Customer Details</Title>
+                    <Paragraph>Customer Name: {inquiryData.customerName}</Paragraph>
+                    {!showDetails && (
+                        <View style={styles.buttonsContainer}>
+                            <TouchableOpacity onPress={handleViewMore}>
+                                <Text style={styles.viewMoreButton}>View More</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={handleUpdateStatus}>
+                                <Text style={styles.updateStatusButton}>Update Status</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    {showDetails && (
+                        <>
+                            <Paragraph>Other Field: {inquiryData.otherField}</Paragraph>
+                            <Paragraph>Another Field: {inquiryData.anotherField}</Paragraph>
+                            {/* Display more fields from the API response */}
+                        </>
+                    )}
+                </Card.Content>
+            </Card>
+
+            {/* Card 2 (Additional Card) */}
+            <Card style={styles.card}>
+                <Card.Content>
+                    <Title>Additional Customer Details</Title>
+                    <Paragraph>Customer Name: Jane Doe</Paragraph>
+                    <View style={styles.buttonsContainer}>
+                        <TouchableOpacity onPress={handleViewMore}>
+                            <Text style={styles.viewMoreButton}>View More</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleUpdateStatus}>
+                            <Text style={styles.updateStatusButton}>Update Status</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Card.Content>
+            </Card>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#daa520',// Background color in a shade of gray
+        padding: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
     card: {
-        marginVertical: 10,
+        width: '100%',
+        marginVertical: 20,
         padding: 10,
+    },
+    buttonsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 10,
+    },
+    viewMoreButton: {
+        color: 'blue',
+        textAlign: 'center',
+
+    },
+    updateStatusButton: {
+        color: 'green',
+        textAlign: 'center',
+
     },
 });
 

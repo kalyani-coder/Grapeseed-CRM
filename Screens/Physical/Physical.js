@@ -69,6 +69,7 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         padding: 16,
+        backgroundColor: '#daa520',
     },
     title: {
         fontSize: 20,
@@ -82,9 +83,10 @@ const styles = {
         padding: 8,
         width: '80%',
         borderRadius: 8,
+        backgroundColor: 'white'
     },
     button: {
-        backgroundColor: '#3498db',
+        backgroundColor: '#000000',
         padding: 15,
         borderRadius: 8,
         marginBottom: 10,
