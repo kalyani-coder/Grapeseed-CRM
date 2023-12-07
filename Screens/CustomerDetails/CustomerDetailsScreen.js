@@ -109,8 +109,8 @@ const CustomerDetailsScreen = ({ navigation }) => {
                 onSelect={(index, value) => setEmploymentStatus(value)}
                 defaultValue="Select Employment Status"
                 style={styles.dropdown}
-                textStyle={{ fontSize: 16 }}
-                dropdownStyle={{ width: '80%', borderRadius: 8 }}
+                textStyle={{ fontSize: 16, color: 'black' }}
+                dropdownStyle={{ width: '80%', borderRadius: 8, zIndex: 100 }}
                 dropdownTextStyle={{ fontSize: 16 }}
                 dropdownIconStyle={styles.dropdownIcon}
             />
@@ -175,7 +175,8 @@ const styles = {
         paddingRight: 30,
         width: '80%',
         borderRadius: 8,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        color: 'white',
     },
     dropdownIcon: {
         position: 'absolute',
