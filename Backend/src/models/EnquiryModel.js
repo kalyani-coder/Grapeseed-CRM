@@ -99,6 +99,9 @@ const EnquirySchema = new mongoose.Schema({
    filename: String,
   path: String,
   serviceImage: String,
+  Executive_Id : {
+    type : String
+  }
 
 })
 
