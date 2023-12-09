@@ -1,7 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Modal, Animated, Easing } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 import NomineeDetailsScreen from './../Nominee/Nominee';
+
+const CollapsibleSection = ({ title, children }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleSection = () => {
+        setIsOpen(!isOpen);
+    };
+
+    return (
+        <View style={styles.collapsibleContainer}>
+            <TouchableOpacity onPress={toggleSection} style={styles.collapsibleHeader}>
+                <Text style={styles.collapsibleHeaderText}>{title}</Text>
+            </TouchableOpacity>
+            {isOpen && <View style={styles.collapsibleContent}>{children}</View>}
+        </View>
+    );
+};
 
 const PersonalInfoPage = ({ navigation }) => {
     const [personalInfo, setPersonalInfo] = useState({
@@ -44,68 +61,63 @@ const PersonalInfoPage = ({ navigation }) => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Personal Information Page</Text>
+            <View style={styles.formContainer}>
+                <CollapsibleSection title="Personal Information Page">
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Name"
+                        value={personalInfo.name}
+                        onChangeText={(text) => setPersonalInfo({ ...personalInfo, name: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Mobile No"
+                        value={personalInfo.mobileNo}
+                        onChangeText={(text) => setPersonalInfo({ ...personalInfo, mobileNo: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Alternate Number"
+                        value={personalInfo.alternateNumber}
+                        onChangeText={(text) => setPersonalInfo({ ...personalInfo, alternateNumber: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Mother Name"
+                        value={personalInfo.motherName}
+                        onChangeText={(text) => setPersonalInfo({ ...personalInfo, motherName: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Last Education"
+                        value={personalInfo.lastEducation}
+                        onChangeText={(text) => setPersonalInfo({ ...personalInfo, lastEducation: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Mail ID"
+                        value={personalInfo.mailId}
+                        onChangeText={(text) => setPersonalInfo({ ...personalInfo, mailId: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Marital Status"
+                        value={personalInfo.maritalStatus}
+                        onChangeText={(text) => setPersonalInfo({ ...personalInfo, maritalStatus: text })}
+                    />
+                    <ModalDropdown
+                        options={lifeStageOptions}
+                        onSelect={(index, value) => setPersonalInfo({ ...personalInfo, lifeStage: value })}
+                        defaultValue="Select Life Stage"
+                        style={styles.dropdown}
+                        textStyle={{ fontSize: 16 }}
+                        dropdownStyle={{ width: '80%', borderRadius: 8 }}
+                        dropdownTextStyle={{ fontSize: 16 }}
+                        dropdownIconStyle={styles.dropdownIcon}
+                    />
+                </CollapsibleSection>
+            </View>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Name"
-                value={personalInfo.name}
-                onChangeText={(text) => setPersonalInfo({ ...personalInfo, name: text })}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Mobile No"
-                value={personalInfo.mobileNo}
-                onChangeText={(text) => setPersonalInfo({ ...personalInfo, mobileNo: text })}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Alternate Number"
-                value={personalInfo.alternateNumber}
-                onChangeText={(text) => setPersonalInfo({ ...personalInfo, alternateNumber: text })}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Mother Name"
-                value={personalInfo.motherName}
-                onChangeText={(text) => setPersonalInfo({ ...personalInfo, motherName: text })}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Last Education"
-                value={personalInfo.lastEducation}
-                onChangeText={(text) => setPersonalInfo({ ...personalInfo, lastEducation: text })}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Mail ID"
-                value={personalInfo.mailId}
-                onChangeText={(text) => setPersonalInfo({ ...personalInfo, mailId: text })}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Marital Status"
-                value={personalInfo.maritalStatus}
-                onChangeText={(text) => setPersonalInfo({ ...personalInfo, maritalStatus: text })}
-            />
-            <ModalDropdown
-                options={lifeStageOptions}
-                onSelect={(index, value) => setPersonalInfo({ ...personalInfo, lifeStage: value })}
-                defaultValue="Select Life Stage"
-                style={styles.dropdown}
-                textStyle={{ fontSize: 16 }}
-                dropdownStyle={{ width: '80%', borderRadius: 8 }}
-                dropdownTextStyle={{ fontSize: 16 }}
-                dropdownIconStyle={styles.dropdownIcon}
-            />
-            {/* 
-            <TouchableOpacity style={styles.button} onPress={handleSave}>
-                <Text style={styles.buttonText}>Save</Text>
-            </TouchableOpacity> */}
-
-            <TouchableOpacity style={styles.button} onPress={handleNext}>
-                <Text style={styles.buttonText}>Save & Next</Text>
-            </TouchableOpacity>
         </ScrollView>
     );
 };
@@ -115,40 +127,40 @@ const styles = {
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 16,
-        backgroundColor: '#daa520'
+        // padding: 16,
+        width: '90%',
+        backgroundColor: '#daa520',
     },
-    title: {
-        fontSize: 20,
-        marginBottom: 20,
+    formContainer: {
+        width: '100%',
+        // Set the width for the entire form container
     },
     input: {
-        height: 40,
+        height: 50,
         borderColor: '#3498db',
         borderWidth: 1,
         marginBottom: 16,
         padding: 8,
-        width: '80%',
+        width: '100%', // Keep the width at 100%
         borderRadius: 8,
-        backgroundColor: 'white'
-
+        backgroundColor: 'white',
     },
     dropdown: {
-        height: 40,
+        height: 50,
         borderColor: '#3498db',
         borderWidth: 1,
         marginBottom: 16,
         paddingLeft: 8,
         paddingRight: 30,
-        width: '80%',
+        width: '100%', // Keep the width at 100%
         borderRadius: 8,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
     },
     dropdownIcon: {
         position: 'absolute',
         top: 10,
         right: 10,
-        color: 'black'
+        color: 'black',
     },
     button: {
         backgroundColor: 'black',
@@ -157,11 +169,31 @@ const styles = {
         marginBottom: 10,
         height: 50,
         alignItems: 'center',
-        width: '80%',
+        width: '100%', // Keep the width at 100%
     },
     buttonText: {
         color: '#fff',
         fontSize: 18,
+    },
+    collapsibleContainer: {
+        marginBottom: 16,
+        width: '100%',
+    },
+    collapsibleHeader: {
+        backgroundColor: '#000',
+        padding: 10,
+        borderRadius: 8,
+        height: 50,
+        alignItems: 'center',
+        width: '100%',
+    },
+    collapsibleHeaderText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    collapsibleContent: {
+        marginTop: 8,
     },
 };
 

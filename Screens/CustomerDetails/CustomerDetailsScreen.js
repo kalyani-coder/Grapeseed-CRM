@@ -1,47 +1,137 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Animated, Easing } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Animated,
+    Easing,
+    Alert,
+    ScrollView,
+    Image,
+} from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
+
+const CollapsibleSection = ({ title, children, isOpen, onToggle }) => {
+    return (
+        <View style={styles.collapsibleContainer}>
+            <TouchableOpacity onPress={onToggle} style={styles.collapsibleHeader}>
+                <Text style={styles.collapsibleHeaderText}>{title}</Text>
+            </TouchableOpacity>
+            {isOpen && <View style={styles.collapsibleContent}>{children}</View>}
+        </View>
+    );
+};
 
 const CustomerDetailsScreen = ({ navigation }) => {
+    const [isOpenCustomerDetails, setIsOpenCustomerDetails] = useState(true);
+    const [isOpenPersonalInfo, setIsOpenPersonalInfo] = useState(false);
+    const [isOpenNomineeInfo, setIsOpenNomineeInfo] = useState(false);
+    const [isOpenWorkDetails, setIsOpenWorkDetails] = useState(false);
+    const [isOpenPhysicalInfo, setIsOpenPhysicalInfo] = useState(false);
+
+    const toggleCustomerDetails = () => {
+        setIsOpenCustomerDetails(!isOpenCustomerDetails);
+    };
+
+    const togglePersonalInfo = () => {
+        setIsOpenPersonalInfo(!isOpenPersonalInfo);
+    };
+
+    const toggleNomineeInfo = () => {
+        setIsOpenNomineeInfo(!isOpenNomineeInfo);
+    };
+
+    const toggleWorkDetails = () => {
+        setIsOpenWorkDetails(!isOpenWorkDetails);
+    };
+
+    const togglePhysicalInfo = () => {
+        setIsOpenPhysicalInfo(!isOpenPhysicalInfo);
+    };
+
     const [Pan_Card, setPan_Card] = useState('');
     const [Adhar_Card, setAdhar_Card] = useState('');
     const [Cancelled_cheque, setCancelled_cheque] = useState('');
-    const [employmentStatus, setEmploymentStatus] = useState(null);
-    // const [incomeDocument, setIncomeDocument] = useState('');
-    // const [photograph, setPhotograph] = useState('');
+    const [Employeement_Status, setEmployeement_Status] = useState(null);
     const [animatedValue] = useState(new Animated.Value(0));
+    const [name, setName] = useState('');
+    const [mobile_nu, setmobile_nu] = useState('');
+    const [Alternative_Mobile, setAlternative_Mobile] = useState('');
+    const [Mother_Name, setMother_Name] = useState('');
+    const [Last_Education, setLast_Education] = useState('');
+    const [Email, setEmail] = useState('');
+    const [Married_Status, setMarried_Status] = useState('');
+    const [lifeStage, setLifeStage] = useState('');
+    const lifeStageOptions = [
+        'Single',
+        'Married',
+        'Married with Children',
+        'Close to Retirement',
+    ];
+    const [Nominee_Name, setNominee_Name] = useState('');
+    const [Nominee_DOB, setNominee_DOB] = useState('');
+    const [Nominee_Ralationship, setNominee_Ralationship] = useState('');
+    const [Company_Name, setCompany_Name] = useState('');
+    const [Annual_Income, setAnnual_Income] = useState('');
+    const [Industry_Name, setIndustry_Name] = useState('');
+    const [Height, setHeight] = useState('');
+    const [Weight, setWeight] = useState('');
+    const [Life_Cover, setLife_Cover] = useState('');
+    const [medical_History, setmedical_History] = useState('');
+    const [selectedImage, setSelectedImage] = useState(null);
 
-    const handleSaveAndNext = async () => {
+    const submitData = async () => {
         try {
-            const response = await fetch('https://executive-grapeseed.onrender.com/api/enquiry', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    Pan_Card: Pan_Card,
-                    Adhar_Card: Adhar_Card,
-                    Cancelled_cheque: Cancelled_cheque,
-                    employmentStatus: employmentStatus,
-                    incomeDocument: incomeDocument,
-                    photograph: photograph,
-                }),
-            });
+            const response = await fetch(
+                'https://executive-grapeseed.onrender.com/api/enquiry',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        Pan_Card,
+                        Adhar_Card,
+                        Cancelled_cheque,
+                        name,
+                        mobile_nu,
+                        Alternative_Mobile,
+                        Mother_Name,
+                        Email,
+                        Last_Education,
+                        Married_Status,
+                        Nominee_Name,
+                        Nominee_DOB,
+                        Nominee_Ralationship,
+                        Company_Name,
+                        Annual_Income,
+                        Industry_Name,
+                        Height,
+                        Weight,
+                        Life_Cover,
+                        medical_History,
+                        Employeement_Status,
+                        filename,
+                        path,
+                        serviceImage,
+                    }),
+                }
+            );
 
-            if (response.ok) {
-                // Handle success, e.g., navigate to the next screen
-                navigation.navigate('PersonalInfoPage');
+            console.log('Response status:', response.status);
+            console.log('Response data:', await response.json());
+
+            if (response.status === 200) {
+                Alert.alert('Data Submitted', 'Your data has been submitted successfully!');
             } else {
-                // Handle error response
-                const errorData = await response.json();
-                console.error('Enquiry API error:', errorData);
-                // Display an alert or handle the error in some way
+                Alert.alert('Error', 'Failed to submit data. Please try again.');
             }
         } catch (error) {
-            // Handle network or other errors
-            console.error('Error posting data to Enquiry API:', error);
-            // Display an alert or handle the error in some way
+            console.error('Error submitting data:', error);
+            Alert.alert('Error', 'An error occurred. Please try again.');
         }
     };
 
@@ -52,8 +142,6 @@ const CustomerDetailsScreen = ({ navigation }) => {
             });
 
             if (result.type === 'success') {
-                setPhotograph(result.uri);
-
                 Animated.timing(animatedValue, {
                     toValue: 1,
                     duration: 20000,
@@ -68,8 +156,25 @@ const CustomerDetailsScreen = ({ navigation }) => {
         }
     };
 
+    const pickImage = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
+
+            if (!result.cancelled) {
+                setSelectedImage(result.uri);
+            }
+        } catch (error) {
+            console.error('Error picking an image', error);
+        }
+    };
+
     useEffect(() => {
-        if (employmentStatus) {
+        if (Employeement_Status) {
             Animated.loop(
                 Animated.timing(animatedValue, {
                     toValue: 1,
@@ -79,72 +184,228 @@ const CustomerDetailsScreen = ({ navigation }) => {
                 })
             ).start();
         }
-    }, [employmentStatus]);
+    }, [Employeement_Status]);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Customer Details Page</Text>
-
-            <TextInput
-                style={styles.input}
-                placeholder="Pan Card"
-                value={Pan_Card}
-                onChangeText={(text) => setPan_Card(text)}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Aadhar Card"
-                value={Adhar_Card}
-                onChangeText={(text) => setAdhar_Card(text)}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Cancelled Cheque"
-                value={Cancelled_cheque}
-                onChangeText={(text) => setCancelled_cheque(text)}
-            />
-
-            <ModalDropdown
-                options={['Self Employed', 'Salaried']}
-                onSelect={(index, value) => setEmploymentStatus(value)}
-                defaultValue="Select Employment Status"
-                style={styles.dropdown}
-                textStyle={{ fontSize: 16, color: 'black' }}
-                dropdownStyle={{ width: '80%', borderRadius: 8, zIndex: 100 }}
-                dropdownTextStyle={{ fontSize: 16 }}
-                dropdownIconStyle={styles.dropdownIcon}
-            />
-
-            <TouchableOpacity style={styles.button} onPress={handleFilePick}>
-                <Animated.Text
-                    style={[
-                        styles.buttonText,
-                        {
-                            marginLeft: animatedValue.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: ['0%', '-200%'],
-                            }),
-                        },
-                    ]}
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.container}>
+                <CollapsibleSection
+                    title="Customer Details"
+                    isOpen={isOpenCustomerDetails}
+                    onToggle={toggleCustomerDetails}
                 >
-                    {employmentStatus === 'Self Employed'
-                        ? 'Upload Last 2 years ITR with Computation of Income'
-                        : employmentStatus === 'Salaried'
-                            ? 'Upload Last 3 Months Salary'
-                            : 'Upload Photograph'}
-                </Animated.Text>
-            </TouchableOpacity>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Pan Card"
+                        value={Pan_Card}
+                        onChangeText={(text) => setPan_Card(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Aadhar Card"
+                        value={Adhar_Card}
+                        onChangeText={(text) => setAdhar_Card(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Cancelled Cheque"
+                        value={Cancelled_cheque}
+                        onChangeText={(text) => setCancelled_cheque(text)}
+                    />
+                    <ModalDropdown
+                        options={['Self Employed', 'Salaried']}
+                        onSelect={(index, value) => setEmployeement_Status(value)}
+                        defaultValue="Select Employment Status"
+                        style={styles.dropdown}
+                        textStyle={{ fontSize: 16, color: 'black' }}
+                        dropdownStyle={{ width: '80%', borderRadius: 8, zIndex: 100 }}
+                        dropdownTextStyle={{ fontSize: 16 }}
+                        dropdownIconStyle={styles.dropdownIcon}
+                    />
+                    <TouchableOpacity style={styles.button} onPress={handleFilePick}>
+                        <Animated.Text
+                            style={[
+                                styles.buttonText,
+                                {
+                                    marginLeft: animatedValue.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: ['0%', '-200%'],
+                                    }),
+                                },
+                            ]}
+                        >
+                            {Employeement_Status === 'Self Employed'
+                                ? 'Upload Last 2 years ITR with Computation of Income'
+                                : Employeement_Status === 'Salaried'
+                                    ? 'Upload Last 3 Months Salary'
+                                    : 'Upload Photograph'}
+                        </Animated.Text>
+                    </TouchableOpacity>
+                </CollapsibleSection>
 
-            {photograph ? <Text>Selected File: {photograph}</Text> : null}
+                <CollapsibleSection
+                    title="Personal Information"
+                    isOpen={isOpenPersonalInfo}
+                    onToggle={togglePersonalInfo}
+                >
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Name"
+                        value={name}
+                        onChangeText={(text) => setName(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Mobile No"
+                        value={mobile_nu}
+                        onChangeText={(text) => setmobile_nu(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Alternate Number"
+                        value={Alternative_Mobile}
+                        onChangeText={(text) => setAlternative_Mobile(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Mother Name"
+                        value={Mother_Name}
+                        onChangeText={(text) => setMother_Name(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Last Education"
+                        value={Last_Education}
+                        onChangeText={(text) => setLast_Education(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Mail ID"
+                        value={Email}
+                        onChangeText={(text) => setEmail(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Marital Status"
+                        value={Married_Status}
+                        onChangeText={(text) => setMarried_Status(text)}
+                    />
+                    <ModalDropdown
+                        options={lifeStageOptions}
+                        onSelect={(index, value) => setLifeStage(value)}
+                        defaultValue="Select Life Stage"
+                        style={styles.dropdown}
+                        textStyle={{ fontSize: 16 }}
+                        dropdownStyle={{ width: '80%', borderRadius: 8 }}
+                        dropdownTextStyle={{ fontSize: 16 }}
+                        dropdownIconStyle={styles.dropdownIcon}
+                    />
+                </CollapsibleSection>
 
-            <TouchableOpacity style={styles.saveAndNextButton} onPress={handleSaveAndNext}>
-                <Text style={styles.buttonText}>Save & Next</Text>
-            </TouchableOpacity>
-        </View>
+                <CollapsibleSection
+                    title="Nominee Information"
+                    isOpen={isOpenNomineeInfo}
+                    onToggle={toggleNomineeInfo}
+                >
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Nominee Name"
+                        value={Nominee_Name}
+                        onChangeText={(text) => setNominee_Name(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Nominee DOB"
+                        value={Nominee_DOB}
+                        onChangeText={(text) => setNominee_DOB(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Nominee Relationship"
+                        value={Nominee_Ralationship}
+                        onChangeText={(text) => setNominee_Ralationship(text)}
+                    />
+                </CollapsibleSection>
+
+                <CollapsibleSection
+                    title="Work Details"
+                    isOpen={isOpenWorkDetails}
+                    onToggle={toggleWorkDetails}
+                >
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Company Name"
+                        value={Company_Name}
+                        onChangeText={(text) => setCompany_Name(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Annual Income"
+                        value={Annual_Income}
+                        onChangeText={(text) => setAnnual_Income(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Industry Name"
+                        value={Industry_Name}
+                        onChangeText={(text) => setIndustry_Name(text)}
+                    />
+                </CollapsibleSection>
+
+                <CollapsibleSection
+                    title="Physical Information"
+                    isOpen={isOpenPhysicalInfo}
+                    onToggle={togglePhysicalInfo}
+                >
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Height"
+                        value={Height}
+                        onChangeText={(text) => setHeight(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Weight"
+                        value={Weight}
+                        onChangeText={(text) => setWeight(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Life Cover"
+                        value={Life_Cover}
+                        onChangeText={(text) => setLife_Cover(text)}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Physical Challenges (Diabetes, BP, Medical History)"
+                        value={medical_History}
+                        onChangeText={(text) => setmedical_History(text)}
+                        multiline
+                    />
+                </CollapsibleSection>
+
+                <TouchableOpacity style={styles.saveAndNextButton} onPress={submitData}>
+                    <Text style={styles.buttonText}>Save & Next</Text>
+                </TouchableOpacity>
+
+                {selectedImage && (
+                    <View style={styles.previewContainer}>
+                        <Text style={styles.previewText}>Uploaded Image Preview:</Text>
+                        <Image source={{ uri: selectedImage }} style={styles.previewImage} />
+                    </View>
+                )}
+            </View>
+        </ScrollView>
     );
 };
-
 const styles = {
+    scrollContainer: {
+        flexGrow: 1,
+    },
+    mainform: {
+        width: "100%",
+        marginLeft: 0
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -152,28 +413,23 @@ const styles = {
         padding: 16,
         backgroundColor: '#daa520',
     },
-    title: {
-        fontSize: 20,
-        marginBottom: 20,
-    },
     input: {
         height: 40,
         borderColor: '#3498db',
         borderWidth: 1,
         marginBottom: 16,
         padding: 8,
-        width: '80%',
+        width: '90%', // Set the width to 80%
         borderRadius: 8,
         backgroundColor: 'white',
     },
     dropdown: {
-        height: 40,
+        height: 50,
         borderColor: '#3498db',
         borderWidth: 1,
         marginBottom: 16,
-        paddingLeft: 8,
-        paddingRight: 30,
-        width: '80%',
+        padding: 8,
+        width: '90%', // Set the width to 80%
         borderRadius: 8,
         backgroundColor: 'white',
         color: 'white',
@@ -184,18 +440,18 @@ const styles = {
         right: 10,
     },
     button: {
-        backgroundColor: 'black',
+        backgroundColor: 'blue',
         padding: 15,
         borderRadius: 8,
         marginBottom: 10,
         height: 50,
         alignItems: 'center',
-        width: '80%',
+        width: '90%', // Set the width to 80%
         overflow: 'hidden',
     },
     buttonText: {
         color: '#fff',
-        fontSize: 18,
+        fontSize: 15,
     },
     saveAndNextButton: {
         backgroundColor: 'black',
@@ -204,9 +460,47 @@ const styles = {
         marginBottom: 10,
         height: 50,
         alignItems: 'center',
-        width: '80%',
+        width: '90%', // Set the width to 80%
         overflow: 'hidden',
     },
-};
+    collapsibleContainer: {
+        marginBottom: 16,
+        width: '100%',
+        marginLeft: 35,
+    },
+    collapsibleHeader: {
+        backgroundColor: '#000000',
+        padding: 10,
+        borderRadius: 8,
+        height: 50,
+        width: '90%',
+        alignItems: 'center',
+    },
+    collapsibleHeaderText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    collapsibleContent: {
+        marginTop: 8,
+    },
+    previewContainer: {
+        alignItems: 'center',
+        marginTop: 20,
+        // Add any additional styles for the preview container here
+    },
+    previewText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        // Add any additional styles for the preview text here
+    },
+    previewImage: {
+        width: 200,
+        height: 200,
+        resizeMode: 'cover',
+        // Add any additional styles for the preview image here
+    },
 
+}
 export default CustomerDetailsScreen;

@@ -5,7 +5,8 @@ import { Card, Title, Paragraph } from 'react-native-paper';
 const UpdateStatusPage = () => {
     const [showDetails, setShowDetails] = useState(false);
     const [inquiryData, setInquiryData] = useState({});
-    const apiUrl = 'YOUR_API_ENDPOINT'; // Replace with your actual API endpoint
+    const [selectedStatus, setSelectedStatus] = useState(''); // State to store selected status
+    const apiUrl = 'https://executive-grapeseed.onrender.com/api/enquiry';
 
     useEffect(() => {
         // Fetch data from the API when the component mounts
@@ -14,17 +15,9 @@ const UpdateStatusPage = () => {
 
     const fetchData = async () => {
         try {
-            // Dummy data for testing
-            const dummyData = {
-                customerName: 'John Doe',
-                otherField: 'Lorem Ipsum',
-                anotherField: 'Dolor Sit Amet',
-            };
-
-            // Simulate API response delay for better testing experience
-            setTimeout(() => {
-                setInquiryData(dummyData);
-            }, 1000);
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            setInquiryData(data[0]); // Update with the actual structure of your API response
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -34,53 +27,64 @@ const UpdateStatusPage = () => {
         setShowDetails(!showDetails);
     };
 
-    const handleUpdateStatus = () => {
+    const handleUpdateStatus = async (status) => {
         // Implement your logic for updating the status here
-        console.log('Updating status...');
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'PATCH', // Assuming the API supports PATCH method for updating status
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    status,
+                }),
+            });
+
+            if (response.ok) {
+                console.log('Status updated successfully');
+                // Fetch updated data after status update
+                fetchData();
+            } else {
+                console.log('Error updating status');
+            }
+        } catch (error) {
+            console.error('Error updating status:', error);
+        }
     };
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.title}>Enquiry List</Text>
 
-            {/* Card 1 */}
+            {/* Card */}
             <Card style={styles.card}>
                 <Card.Content>
                     <Title>Customer Details</Title>
-                    <Paragraph>Customer Name: {inquiryData.customerName}</Paragraph>
+                    <Paragraph>Customer Name: {inquiryData.name}</Paragraph>
                     {!showDetails && (
                         <View style={styles.buttonsContainer}>
                             <TouchableOpacity onPress={handleViewMore}>
                                 <Text style={styles.viewMoreButton}>View More</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={handleUpdateStatus}>
-                                <Text style={styles.updateStatusButton}>Update Status</Text>
+                            <TouchableOpacity onPress={() => handleUpdateStatus('pending')}>
+                                <Text style={styles.updateStatusButton}>Pending</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => handleUpdateStatus('approved')}>
+                                <Text style={styles.updateStatusButton}>Approved</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => handleUpdateStatus('rejected')}>
+                                <Text style={styles.updateStatusButton}>Rejected</Text>
                             </TouchableOpacity>
                         </View>
                     )}
                     {showDetails && (
                         <>
-                            <Paragraph>Other Field: {inquiryData.otherField}</Paragraph>
-                            <Paragraph>Another Field: {inquiryData.anotherField}</Paragraph>
+                            <Paragraph>Pan Card: {inquiryData.Pan_Card}</Paragraph>
+                            <Paragraph>Adhar Card: {inquiryData.Adhar_Card}</Paragraph>
+                            <Paragraph>Cancelled Cheque: {inquiryData.Cancelled_cheque}</Paragraph>
                             {/* Display more fields from the API response */}
                         </>
                     )}
-                </Card.Content>
-            </Card>
-
-            {/* Card 2 (Additional Card) */}
-            <Card style={styles.card}>
-                <Card.Content>
-                    <Title>Additional Customer Details</Title>
-                    <Paragraph>Customer Name: Jane Doe</Paragraph>
-                    <View style={styles.buttonsContainer}>
-                        <TouchableOpacity onPress={handleViewMore}>
-                            <Text style={styles.viewMoreButton}>View More</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleUpdateStatus}>
-                            <Text style={styles.updateStatusButton}>Update Status</Text>
-                        </TouchableOpacity>
-                    </View>
                 </Card.Content>
             </Card>
         </ScrollView>
@@ -90,7 +94,7 @@ const UpdateStatusPage = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#daa520',// Background color in a shade of gray
+        backgroundColor: '#daa520',
         padding: 20,
     },
     title: {
@@ -111,12 +115,10 @@ const styles = StyleSheet.create({
     viewMoreButton: {
         color: 'blue',
         textAlign: 'center',
-
     },
     updateStatusButton: {
         color: 'green',
         textAlign: 'center',
-
     },
 });
 

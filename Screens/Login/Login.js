@@ -1,5 +1,5 @@
 // Import necessary modules and components
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Animated, Easing, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
@@ -21,53 +21,36 @@ const Login = () => {
         try {
             setAnimating(true);
 
-            // Send a POST request to your API for authentication
-            const response = await fetch('https://executive-grapeseed.onrender.com/api/clients', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    clientEmail,
-                    clientpassword,
-                }),
-            });
+            
+            const staticUserData = {
+                email: 'test@example.com',
+                password: 'password123',
+            };
 
-            // Check if the response is successful
-            if (response.ok) {
-                const responseData = await response.json();
-                console.log(responseData);
-
-                // Check if the API response indicates success
-                if (responseData.success) {
-                    Animated.timing(rotateValue, {
-                        toValue: 1,
-                        duration: 1000,
-                        easing: Easing.ease,
-                        useNativeDriver: false,
-                    }).start(() => {
-                        setAnimating(false);
-                        rotateValue.setValue(0);
-
-                        // Navigate to the 'Dashboard' screen upon successful login
-                        Alert.alert('Login successful!', 'Welcome to the Dashboard', [
-                            {
-                                text: 'OK',
-                                onPress: () => {
-                                    navigation.navigate('Dashboard');
-                                },
-                            },
-                        ]);
-                    });
-                } else {
-                    // If the API response indicates failure, show an error message
-                    Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
+            // Check if the entered credentials match the static user data
+            if (clientEmail === staticUserData.email && clientpassword === staticUserData.password) {
+                Animated.timing(rotateValue, {
+                    toValue: 1,
+                    duration: 1000,
+                    easing: Easing.ease,
+                    useNativeDriver: false,
+                }).start(() => {
                     setAnimating(false);
-                }
+                    rotateValue.setValue(0);
+
+                    // Navigate to the 'Dashboard' screen upon successful login
+                    Alert.alert('Login successful!', 'Welcome to the Dashboard', [
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                navigation.navigate('Dashboard');
+                            },
+                        },
+                    ]);
+                });
             } else {
-                // Handle other HTTP status codes, e.g., server errors
-                console.log('Response data:', await response.text()); // Log the response data for debugging
-                Alert.alert('Login Failed', 'Something went wrong. Please try again later.');
+                // If the entered credentials are incorrect, show an error message
+                Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
                 setAnimating(false);
             }
         } catch (error) {
@@ -76,7 +59,7 @@ const Login = () => {
         }
     };
 
-    // Interpolate the rotation for the animation
+    // Animated value for rotation animation
     const rotateInterpolation = rotateValue.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '360deg'],

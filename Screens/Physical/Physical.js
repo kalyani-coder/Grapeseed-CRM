@@ -1,64 +1,60 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import ModalDropdown from 'react-native-modal-dropdown';
 
 const PhysicalInfoPage = ({ navigation }) => {
+    const [isCollapsed, setIsCollapsed] = useState(true);
     const [physicalInfo, setPhysicalInfo] = useState({
         height: '',
         weight: '',
         physicalChallenges: '',
     });
 
-    const handleSaveAndNext = async () => {
-        try {
-            // Add logic to send the physicalInfo data to your API
-            // For example, using fetch or axios
-            const response = await fetch('YOUR_API_ENDPOINT', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(physicalInfo),
-            });
-
-            // Handle the API response if needed
-            const data = await response.json();
-            console.log('API Response:', data);
-        } catch (error) {
-            console.error('Error saving data:', error);
-        }
-
-        // Navigate to the next page (replace 'NextPage' with your actual next page)
-        navigation.navigate('NextPage');
+    const toggleCollapsible = () => {
+        setIsCollapsed(!isCollapsed);
     };
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Physical Information Page</Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Height"
-                value={physicalInfo.height}
-                onChangeText={(text) => setPhysicalInfo({ ...physicalInfo, height: text })}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Weight"
-                value={physicalInfo.weight}
-                onChangeText={(text) => setPhysicalInfo({ ...physicalInfo, weight: text })}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Physical Challenges (Diabetes, BP, Medical History)"
-                value={physicalInfo.physicalChallenges}
-                onChangeText={(text) => setPhysicalInfo({ ...physicalInfo, physicalChallenges: text })}
-                multiline
-            />
+            <View style={styles.formContainer}>
 
-            <TouchableOpacity style={styles.button} onPress={handleSaveAndNext}>
-                <Text style={styles.buttonText}>Save</Text>
-            </TouchableOpacity>
+
+
+                <TouchableOpacity onPress={toggleCollapsible} style={styles.titleContainer}>
+                    <Text style={styles.title}>Physical Information Page</Text>
+                </TouchableOpacity>
+                <View style={styles.innerFormContainer}>
+                    {!isCollapsed && (
+                        <View>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Height"
+                                value={physicalInfo.height}
+                                onChangeText={(text) => setPhysicalInfo({ ...physicalInfo, height: text })}
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Weight"
+                                value={physicalInfo.weight}
+                                onChangeText={(text) => setPhysicalInfo({ ...physicalInfo, weight: text })}
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Physical Challenges (Diabetes, BP, Medical History)"
+                                value={physicalInfo.physicalChallenges}
+                                onChangeText={(text) =>
+                                    setPhysicalInfo({ ...physicalInfo, physicalChallenges: text })
+                                }
+                                multiline
+                            />
+
+                            <TouchableOpacity style={styles.button}>
+                                <Text style={styles.buttonText}>Save</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </View>
+            </View>
         </ScrollView>
     );
 };
@@ -66,14 +62,30 @@ const PhysicalInfoPage = ({ navigation }) => {
 const styles = {
     container: {
         flexGrow: 1,
-        justifyContent: 'center',
         alignItems: 'center',
-        padding: 16,
         backgroundColor: '#daa520',
+
+        width: '90%',
+    },
+    titleContainer: {
+        backgroundColor: '#000',
+        padding: 10,
+        borderRadius: 8,
+        height: 50,
+        alignItems: 'center',
+        width: '100%', // Set the width to 100%
+        marginBottom: 10,
+    },
+    formContainer: {
+        width: '100%',
+        alignItems: 'center',
+    },
+    innerFormContainer: {
+        width: '100%', // Set the width for the inner form container to 100%
     },
     title: {
         fontSize: 20,
-        marginBottom: 20,
+        color: '#fff',
     },
     input: {
         height: 40,
@@ -81,9 +93,9 @@ const styles = {
         borderWidth: 1,
         marginBottom: 16,
         padding: 8,
-        width: '80%',
+        width: '100%', // Keep the width at 100%
         borderRadius: 8,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
     },
     button: {
         backgroundColor: '#000000',
@@ -92,7 +104,7 @@ const styles = {
         marginBottom: 10,
         height: 50,
         alignItems: 'center',
-        width: '80%',
+        width: '100%', // Keep the width at 100%
     },
     buttonText: {
         color: '#fff',
