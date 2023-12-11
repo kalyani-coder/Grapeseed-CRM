@@ -40,7 +40,6 @@ mongoose.connect('mongodb+srv://vedantassignment05:M9e09IV5RxLDA9uu@executive.h2
 
 
 
-
 const apiRouter = express.Router();
 
 //   handle route 
