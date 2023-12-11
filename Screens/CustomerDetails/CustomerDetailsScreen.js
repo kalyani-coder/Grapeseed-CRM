@@ -16,6 +16,8 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 
@@ -139,6 +141,10 @@ const CustomerDetailsScreen = ({ navigation }) => {
 
     const submitData = async () => {
         try {
+            // Retrieve user data from AsyncStorage
+            const userDataString = await AsyncStorage.getItem('userData');
+            const userData = JSON.parse(userDataString);
+
             const response = await fetch(
                 'https://executive-grapeseed.onrender.com/api/enquiry',
                 {
@@ -168,6 +174,7 @@ const CustomerDetailsScreen = ({ navigation }) => {
                         Life_Cover,
                         medical_History,
                         Employeement_Status,
+                        userEmail: userData.email,
                         // filename,
                         // path,
                         // serviceImage,

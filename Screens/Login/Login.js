@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Animated, Easing, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 // Create the Login component
 const Login = () => {
@@ -21,7 +23,6 @@ const Login = () => {
         try {
             setAnimating(true);
 
-            // Replace 'https://your-api-url.com/login' with your actual API login endpoint
             const apiUrl = 'https://executive-grapeseed.onrender.com/api/clients';
 
             const response = await fetch(apiUrl, {
@@ -37,6 +38,9 @@ const Login = () => {
 
             if (response.ok) {
                 const userData = await response.json();
+
+                // Save user data to AsyncStorage
+                await AsyncStorage.setItem('userData', JSON.stringify(userData));
 
                 Animated.timing(rotateValue, {
                     toValue: 1,
