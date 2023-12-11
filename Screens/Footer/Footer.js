@@ -3,7 +3,7 @@ import { Text, SafeAreaView, StyleSheet } from 'react-native';
 import { NativeBaseProvider, Box, HStack, Pressable, Center, Icon } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-function Example() {
+function Footer() {
   const [selected, setSelected] = React.useState(0);
 
   const items = [
@@ -45,7 +45,7 @@ export default function App() {
   return (
     <NativeBaseProvider>
       <SafeAreaView style={styles.container}>
-        <Example />
+        <Footer />
       </SafeAreaView>
     </NativeBaseProvider>
   );

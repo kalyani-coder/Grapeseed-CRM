@@ -1,6 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Card, Title, Paragraph } from 'react-native-paper';
+import { NativeBaseProvider, Box, HStack, Pressable, Center, Icon } from 'native-base';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+
+
+function Footer() {
+    const [selected, setSelected] = React.useState(0);
+    const navigation = useNavigation();
+
+    const items = [
+        { name: 'Home', icon: 'home' },
+        { name: 'Profile', icon: 'person' },
+        { name: 'Settings', icon: 'settings' },
+        // Add more items as needed
+    ];
+
+    const handlePress = (index) => {
+        setSelected(index);
+
+        // Navigate to the corresponding screen
+        if (index === 0) { // Check if the user clicked on the "Home" button
+            navigation.navigate('Dashboard'); // Navigate to the "Dashboard" screen
+        } else if (index === 1) {
+            navigation.navigate('ProfilePage'); // Navigate to the "ProfilePage" screen
+        }
+        // Add more navigation logic for other buttons if needed
+    };
+
+    return (
+        <HStack bg="black" alignItems="center" shadow={6}>
+            {items.map((item, index) => (
+                <Pressable
+                    key={index}
+                    cursor="pointer"
+                    opacity={selected === index ? 1 : 0.5}
+                    py="2"
+                    flex={1}
+                    onPress={() => handlePress(index)}
+                >
+                    <Center>
+                        <Icon mb="1" as={<MaterialIcons name={item.icon} />} size="sm" />
+                        <Text color="white" fontSize="12" style={styles.footerText}>
+                            {item.name}
+                        </Text>
+                    </Center>
+                </Pressable>
+            ))}
+        </HStack>
+    );
+}
+
 
 const ViewInquiryPage = () => {
     const [expandedCards, setExpandedCards] = useState([]);
@@ -61,26 +112,34 @@ const ViewInquiryPage = () => {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.title}>View Inquiry Page</Text>
+        <NativeBaseProvider>
+            <ScrollView style={styles.container}>
+                <Text style={styles.title}>View Inquiry Page</Text>
 
-            {inquiryData.map((data, index) => (
-                <Card key={index} style={styles.card}>
-                    <Card.Content>
-                        <Title>Customer Details</Title>
-                        <View style={styles.row}>
-                            <Paragraph>Customer Name: {data.name}</Paragraph>
-                            <TouchableOpacity onPress={() => handleViewMore(index)}>
-                                <Text style={styles.viewMoreButton}>
-                                    {expandedCards[index] ? 'View Less' : 'View More'}
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                        {expandedCards[index] && renderCardFields(data)}
-                    </Card.Content>
-                </Card>
-            ))}
-        </ScrollView>
+                {inquiryData.length > 0 ? (
+                    inquiryData.map((data, index) => (
+                        <Card key={index} style={styles.card}>
+                            <Card.Content>
+                                <Title>Customer Details</Title>
+                                <View style={styles.row}>
+                                    <Paragraph>Customer Name: {data.name}</Paragraph>
+                                    <TouchableOpacity onPress={() => handleViewMore(index)}>
+                                        <Text style={styles.viewMoreButton}>
+                                            {expandedCards[index] ? 'View Less' : 'View More'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                                {expandedCards[index] && renderCardFields(data)}
+                            </Card.Content>
+                        </Card>
+                    ))
+                ) : (
+                    <Text>No inquiry data available</Text>
+                )}
+            </ScrollView>
+            <Footer />
+        </NativeBaseProvider>
+
     );
 };
 
@@ -88,6 +147,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#daa520',
+    },
+    footerText: {
+        color: 'white'
     },
     title: {
         fontSize: 24,
@@ -99,7 +161,7 @@ const styles = StyleSheet.create({
         width: '80%',
         marginVertical: 20,
         padding: 10,
-        alignSelf: 'center', // Center the card horizontally
+        alignSelf: 'center',
     },
     row: {
         flexDirection: 'row',

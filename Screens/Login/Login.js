@@ -9,8 +9,8 @@ const Login = () => {
     const navigation = useNavigation();
 
     // State variables for email, password, and animation
-    const [clientEmail, setclientEmail] = useState('');
-    const [clientpassword, setclientpassword] = useState('');
+    const [clientEmail, setClientEmail] = useState('');
+    const [clientPassword, setClientPassword] = useState('');
     const [isAnimating, setAnimating] = useState(false);
 
     // Animated value for rotation animation
@@ -21,14 +21,23 @@ const Login = () => {
         try {
             setAnimating(true);
 
-            
-            const staticUserData = {
-                email: 'test@example.com',
-                password: 'password123',
-            };
+            // Replace 'https://your-api-url.com/login' with your actual API login endpoint
+            const apiUrl = 'https://executive-grapeseed.onrender.com/api/clients';
 
-            // Check if the entered credentials match the static user data
-            if (clientEmail === staticUserData.email && clientpassword === staticUserData.password) {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: clientEmail,
+                    password: clientPassword,
+                }),
+            });
+
+            if (response.ok) {
+                const userData = await response.json();
+
                 Animated.timing(rotateValue, {
                     toValue: 1,
                     duration: 1000,
@@ -43,7 +52,8 @@ const Login = () => {
                         {
                             text: 'OK',
                             onPress: () => {
-                                navigation.navigate('Dashboard');
+                                // You can pass user data to the Dashboard screen if needed
+                                navigation.navigate('Dashboard', { userData });
                             },
                         },
                     ]);
@@ -78,7 +88,7 @@ const Login = () => {
                         placeholder="Email"
                         keyboardType="email-address"
                         autoCapitalize="none"
-                        onChangeText={(text) => setclientEmail(text)}
+                        onChangeText={(text) => setClientEmail(text)}
                     />
                 </View>
 
@@ -88,7 +98,7 @@ const Login = () => {
                         style={styles.input}
                         placeholder="Password"
                         secureTextEntry
-                        onChangeText={(text) => setclientpassword(text)}
+                        onChangeText={(text) => setClientPassword(text)}
                     />
                 </View>
 

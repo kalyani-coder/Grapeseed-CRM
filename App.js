@@ -11,6 +11,7 @@ import PhysicalInfoPage from './Screens/Physical/Physical';
 import ViewInquiryPage from './Screens/ViewEnquiry/ViewEnquiry';
 import UpdateStatusPage from './Screens/UpdateStatus/UpdateStatus';
 import EditEnquiryStatus from './Screens/EditEnquiryStatus/EditEnquiryStatus';
+import ProfilePage from './Screens/Profile/Profile';
 
 
 const Stack = createStackNavigator();
@@ -28,6 +29,7 @@ const App = () => {
         <Stack.Screen name="ViewInquiryPage" component={ViewInquiryPage} />
         <Stack.Screen name="UpdateStatusPage" component={UpdateStatusPage} />
         <Stack.Screen name="EditInquiryStatus" component={EditEnquiryStatus} />
+        <Stack.Screen name="ProfilePage" component={ProfilePage} />
       </Stack.Navigator>
     </NavigationContainer>
   );
