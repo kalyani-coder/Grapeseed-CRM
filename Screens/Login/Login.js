@@ -44,7 +44,7 @@ const Login = () => {
 
             if (user) {
                 if (user.clientpassword === clientPassword) {
-                    // Save user data to AsyncStorage
+                    // Save user ID to AsyncStorage
                     await AsyncStorage.setItem('userId', user._id);
 
                     Animated.timing(rotateValue, {

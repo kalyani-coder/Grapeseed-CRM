@@ -1,48 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ImageBackground, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { NativeBaseProvider, Box, HStack, Pressable, Center, Icon, Image } from 'native-base';
-import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { Image, NativeBaseProvider } from 'native-base';
 
-// Import the Footer component if not already imported
-// import Footer from '../Footer/Footer';
-
-const ProfilePage = () => {
+const ProfilePage = ({ navigation }) => {
     const [profileData, setProfileData] = useState({
-        fullName: '',
-        contactNumber: '',
-        address: '',
-        panCard: '',
-        email: '',
+        clientName: '',
+        clientPhone: '',
+        clientAddress: '',
+        clientPanCard: '',
+        clientEmail: '',
     });
     const [isLoading, setLoading] = useState(true);
-
-    const navigation = useNavigation();
 
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
-                // Retrieve user data from AsyncStorage
-                const storedUserData = await AsyncStorage.getItem('userData');
-        
-                if (storedUserData) {
-                    const userData = JSON.parse(storedUserData);
-                    console.log('Fetched user data:', userData);
-                    // Now you can use userData in your profile screen
+                // Retrieve user ID from AsyncStorage
+                const userId = await AsyncStorage.getItem('userId');
+
+                if (userId) {
+                    // Fetch user data using the retrieved user ID
+                    const apiUrl = `https://executive-grapeseed.onrender.com/api/clients/${userId}`;
+                    const response = await fetch(apiUrl);
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const userData = await response.json();
+                    setProfileData(userData);
+
+                    setLoading(false);
                 } else {
-                    console.warn('User data not found in AsyncStorage');
+                    console.warn('User ID not found in AsyncStorage');
                 }
             } catch (error) {
                 console.error('Error during profile data fetch:', error);
+                setLoading(false);
+                Alert.alert('Error', 'Failed to fetch profile data. Please try again.');
             }
         };
-        
-
 
         fetchProfileData();
     }, []); // The empty dependency array ensures that the effect runs only once when the component mounts
+
+    const handleLogout = async () => {
+        try {
+            // Clear user data from AsyncStorage
+            await AsyncStorage.removeItem('userId');
+
+            // Navigate to the login screen or any other screen after logout
+            navigation.navigate('Login');
+        } catch (error) {
+            console.error('Error during logout:', error);
+            Alert.alert('Error', 'Failed to logout. Please try again.');
+        }
+    };
 
     if (isLoading) {
         return (
@@ -85,9 +100,12 @@ const ProfilePage = () => {
                         <Text style={styles.profileText}>Email: {profileData.clientEmail}</Text>
                     </View>
                 </View>
+
+                {/* Logout Button */}
+                <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                    <Text style={styles.logoutButtonText}>Logout</Text>
+                </TouchableOpacity>
             </View>
-            {/* Uncomment the line below if the Footer component is not already imported */}
-            {/* <Footer /> */}
         </NativeBaseProvider>
     );
 };
@@ -95,7 +113,7 @@ const ProfilePage = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#3498db', // Change the background color as needed
+        backgroundColor: '#daa520', // Change the background color as needed
         padding: 20,
         alignItems: 'center',
     },
@@ -113,11 +131,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 20,
         textAlign: 'center',
-        color: '#fff', // Text color
+        color: '#000', // Text color
     },
     profileDataContainer: {
         width: '100%',
         alignItems: 'flex-start',
+        marginBottom: 20,
     },
     profileRow: {
         flexDirection: 'row',
@@ -129,7 +148,18 @@ const styles = StyleSheet.create({
     },
     profileText: {
         fontSize: 20,
+        color: '#000', // Text color
+    },
+    logoutButton: {
+        backgroundColor: '#e74c3c', // Adjust the background color as needed
+        padding: 10,
+        borderRadius: 8,
+        marginTop: 20,
+    },
+    logoutButtonText: {
         color: '#fff', // Text color
+        fontSize: 16,
+        textAlign: 'center',
     },
     loadingContainer: {
         flex: 1,
