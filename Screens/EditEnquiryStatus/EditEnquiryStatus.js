@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Linking } from 'react-native';
 import { Card, Title, Paragraph } from 'react-native-paper';
 import ModalDropdown from 'react-native-modal-dropdown';
 
@@ -32,6 +32,10 @@ function Footer() {
             navigation.navigate('Dashboard');
         } else if (index === 1) {
             navigation.navigate('ProfilePage');
+        }
+        else if (index === 2) {
+            // Open phone settings
+            Linking.openSettings();
         }
         // Add more navigation logic for other buttons if needed
     };

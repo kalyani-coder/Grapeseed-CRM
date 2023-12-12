@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Linking } from 'react-native';
 import { Card, Title, Paragraph } from 'react-native-paper';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { NativeBaseProvider, Box, HStack, Pressable, Center, Icon } from 'native-base';
@@ -26,6 +26,10 @@ function Footer() {
             navigation.navigate('Dashboard'); // Navigate to the "Dashboard" screen
         } else if (index === 1) {
             navigation.navigate('ProfilePage'); // Navigate to the "ProfilePage" screen
+        }
+        else if (index === 2) {
+            // Open phone settings
+            Linking.openSettings();
         }
         // Add more navigation logic for other buttons if needed
     };
@@ -148,8 +152,7 @@ const EditEnquiryPage = () => {
                             <>
                                 <Paragraph>Pan Card: {inquiryData.Pan_Card}</Paragraph>
                                 <Paragraph>Adhar Card: {inquiryData.Adhar_Card}</Paragraph>
-                                <Paragraph>Cancelled Cheque: {inquiryData.Cancelled_cheque}</Paragraph>
-                                {/* Display more fields from the API response */}
+                                
                             </>
                         )}
                     </Card.Content>

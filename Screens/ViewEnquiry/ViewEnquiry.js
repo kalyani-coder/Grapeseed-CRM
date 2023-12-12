@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Linking } from 'react-native';
 import { Card, Title, Paragraph } from 'react-native-paper';
 import { NativeBaseProvider, Box, HStack, Pressable, Center, Icon } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -25,6 +25,10 @@ function Footer() {
             navigation.navigate('Dashboard'); // Navigate to the "Dashboard" screen
         } else if (index === 1) {
             navigation.navigate('ProfilePage'); // Navigate to the "ProfilePage" screen
+        }
+        else if (index === 2) {
+            // Open phone settings
+            Linking.openSettings();
         }
         // Add more navigation logic for other buttons if needed
     };

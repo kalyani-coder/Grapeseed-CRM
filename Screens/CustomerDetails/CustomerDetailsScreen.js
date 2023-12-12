@@ -9,6 +9,7 @@ import {
     Alert,
     ScrollView,
     Image,
+    Linking,
 } from 'react-native';
 import { HStack, Pressable, Center, Icon, NativeBaseProvider } from 'native-base';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -41,7 +42,11 @@ function Footer() {
             navigation.navigate('Dashboard'); // Navigate to the "Dashboard" screen
         } else if (index === 1) {
             navigation.navigate('ProfilePage'); // Navigate to the "ProfilePage" screen
+        } else if (index === 2) {
+            // Open phone settings
+            Linking.openSettings();
         }
+
         // Add more navigation logic for other buttons if needed
     };
 
@@ -458,9 +463,9 @@ const CustomerDetailsScreen = ({ navigation }) => {
                             <Image source={{ uri: selectedImage }} style={styles.previewImage} />
                         </View>
                     )}
-                    <Footer />
                 </View>
             </ScrollView>
+            <Footer />
         </NativeBaseProvider>
     );
 };
