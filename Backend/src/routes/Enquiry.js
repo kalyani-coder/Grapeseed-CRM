@@ -23,7 +23,15 @@ router.get("/", async (req, res) => {
     const enquiries = await newEnquiry.find();
     res.json(enquiries);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error fetching enquiries:", error);
+
+    // Handle different types of errors
+    if (error.name === 'MongoError' && error.code === 18) {
+      // Handle MongoDB validation error
+      return res.status(400).json({ message: 'Invalid request' });
+    }
+
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
@@ -87,6 +95,31 @@ router.delete("/:id", async (req, res) => {
     res.json(deletedEnquiry);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+
+router.get("/:id", async (req, res) => {
+  const enquiryId = req.params.id;
+
+  try {
+    const enquiry = await newEnquiry.findById(enquiryId);
+
+    if (!enquiry) {
+      return res.status(404).json({ message: 'Enquiry not found' });
+    }
+
+    res.json(enquiry);
+  } catch (error) {
+    console.error("Error fetching enquiry by ID:", error);
+
+    // Handle different types of errors
+    if (error.name === 'CastError') {
+      // Handle invalid ID format
+      return res.status(400).json({ message: 'Invalid ID format' });
+    }
+
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 

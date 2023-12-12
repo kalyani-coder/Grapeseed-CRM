@@ -91,9 +91,6 @@ const EnquirySchema = new mongoose.Schema({
     type: String,
     // required  : true
   },
-  Status: {
-    type: String,
-  },
 
   Enquiry_Date: {
     type: Date,
@@ -103,6 +100,10 @@ const EnquirySchema = new mongoose.Schema({
   path: String,
   serviceImage: String,
   Executive_Id : {
+    type : String
+  },
+
+  Enquiry_Status :{
     type : String
   }
 
