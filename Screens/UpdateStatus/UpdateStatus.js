@@ -152,7 +152,28 @@ const EditEnquiryPage = () => {
                             <>
                                 <Paragraph>Pan Card: {inquiryData.Pan_Card}</Paragraph>
                                 <Paragraph>Adhar Card: {inquiryData.Adhar_Card}</Paragraph>
-                                
+                                <Paragraph>Cancelled Cheque: {inquiryData.Cancelled_cheque}</Paragraph>
+                                <Paragraph>Name: {inquiryData.name}</Paragraph>
+                                <Paragraph>Mobile Number: {inquiryData.mobile_nu}</Paragraph>
+                                <Paragraph>Alternative Mobile: {inquiryData.Alternative_Mobile}</Paragraph>
+                                <Paragraph>Mother Name: {inquiryData.Mother_Name}</Paragraph>
+                                <Paragraph>Email: {inquiryData.Email}</Paragraph>
+                                <Paragraph>Last Education: {inquiryData.Last_Education}</Paragraph>
+                                <Paragraph>Married Status: {inquiryData.Married_Status}</Paragraph>
+                                <Paragraph>Nominee Name: {inquiryData.Nominee_Name}</Paragraph>
+                                <Paragraph>Nominee DOB: {inquiryData.Nominee_DOB}</Paragraph>
+                                <Paragraph>Nominee Relationship: {inquiryData.Nominee_Ralationship}</Paragraph>
+                                <Paragraph>Company Name: {inquiryData.Company_Name}</Paragraph>
+                                <Paragraph>Annual Income: {inquiryData.Annual_Income}</Paragraph>
+                                <Paragraph>Industry Name: {inquiryData.Industry_Name}</Paragraph>
+                                <Paragraph>Height: {inquiryData.Height}</Paragraph>
+                                <Paragraph>Weight: {inquiryData.Weight}</Paragraph>
+                                <Paragraph>Life Cover: {inquiryData.Life_Cover}</Paragraph>
+                                <Paragraph>Medical History: {inquiryData.medical_History}</Paragraph>
+                                <Paragraph>Employment Status: {inquiryData.Employeement_Status}</Paragraph>
+                                <Paragraph>Filename: {inquiryData.filename}</Paragraph>
+                                <Paragraph>Path: {inquiryData.path}</Paragraph>
+                                <Paragraph>Service Image: {inquiryData.serviceImage}</Paragraph>
                             </>
                         )}
                     </Card.Content>
@@ -197,7 +218,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     editStatusButton: {
-        color: 'orange',
+        // color: 'orange',
         textAlign: 'center',
     },
 });
