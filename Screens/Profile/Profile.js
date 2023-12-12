@@ -1,56 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ActivityIndicator, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { NativeBaseProvider, Box, HStack, Pressable, Center, Icon } from 'native-base';
+import { NativeBaseProvider, Box, HStack, Pressable, Center, Icon, Image } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
-
-function Footer() {
-    const [selected, setSelected] = React.useState(0);
-    const navigation = useNavigation();
-
-    const items = [
-        { name: 'Home', icon: 'home' },
-        { name: 'Profile', icon: 'person' },
-        { name: 'Settings', icon: 'settings' },
-        // Add more items as needed
-    ];
-
-    const handlePress = (index) => {
-        setSelected(index);
-
-        // Navigate to the corresponding screen
-        if (index === 0) { // Check if the user clicked on the "Home" button
-            navigation.navigate('Dashboard'); // Navigate to the "Dashboard" screen
-        } else if (index === 1) {
-            navigation.navigate('ProfilePage'); // Navigate to the "ProfilePage" screen
-        }
-        // Add more navigation logic for other buttons if needed
-    };
-
-    return (
-        <HStack bg="black" alignItems="center" shadow={6}>
-            {items.map((item, index) => (
-                <Pressable
-                    key={index}
-                    cursor="pointer"
-                    opacity={selected === index ? 1 : 0.5}
-                    py="2"
-                    flex={1}
-                    onPress={() => handlePress(index)}
-                >
-                    <Center>
-                        <Icon mb="1" as={<MaterialIcons name={item.icon} />} size="sm" />
-                        <Text color="white" fontSize="12" style={styles.footerText}>
-                            {item.name}
-                        </Text>
-                    </Center>
-                </Pressable>
-            ))}
-        </HStack>
-    );
-}
+// Import the Footer component if not already imported
+// import Footer from '../Footer/Footer';
 
 const ProfilePage = () => {
     const [profileData, setProfileData] = useState({
@@ -60,33 +17,40 @@ const ProfilePage = () => {
         panCard: '',
         email: '',
     });
+    const [isLoading, setLoading] = useState(true);
+
+    const navigation = useNavigation();
 
     useEffect(() => {
-        // Fetch profile data from your API endpoint
-        const apiUrl = 'YOUR_API_ENDPOINT';
-
-        // Dummy data for testing
-        const dummyData = {
-            fullName: 'John Doe',
-            contactNumber: '123-456-7890',
-            address: '123 Main St, Cityville',
-            panCard: 'ABCDE1234F',
-            email: 'john.doe@example.com',
+        const fetchProfileData = async () => {
+            try {
+                // Retrieve user data from AsyncStorage
+                const storedUserData = await AsyncStorage.getItem('userData');
+        
+                if (storedUserData) {
+                    const userData = JSON.parse(storedUserData);
+                    console.log('Fetched user data:', userData);
+                    // Now you can use userData in your profile screen
+                } else {
+                    console.warn('User data not found in AsyncStorage');
+                }
+            } catch (error) {
+                console.error('Error during profile data fetch:', error);
+            }
         };
+        
 
-        // Set the dummy data to the state
-        setProfileData(dummyData);
 
-        // If you want to fetch real data, uncomment the following lines and replace with your fetch logic
-        // fetch(apiUrl)
-        //     .then((response) => response.json())
-        //     .then((data) => {
-        //         setProfileData(data);
-        //     })
-        //     .catch((error) => {
-        //         console.error('Error fetching profile data:', error);
-        //     });
+        fetchProfileData();
     }, []); // The empty dependency array ensures that the effect runs only once when the component mounts
+
+    if (isLoading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#3498db" />
+            </View>
+        );
+    }
 
     return (
         <NativeBaseProvider>
@@ -102,27 +66,28 @@ const ProfilePage = () => {
                 <View style={styles.profileDataContainer}>
                     <View style={styles.profileRow}>
                         <FontAwesome name="user" size={24} color="#fff" style={styles.icon} />
-                        <Text style={styles.profileText}>Full Name: {profileData.fullName}</Text>
+                        <Text style={styles.profileText}>Full Name: {profileData.clientName}</Text>
                     </View>
                     <View style={styles.profileRow}>
                         <FontAwesome name="phone" size={24} color="#fff" style={styles.icon} />
-                        <Text style={styles.profileText}>Contact Number: {profileData.contactNumber}</Text>
+                        <Text style={styles.profileText}>Contact Number: {profileData.clientPhone}</Text>
                     </View>
                     <View style={styles.profileRow}>
                         <FontAwesome name="home" size={24} color="#fff" style={styles.icon} />
-                        <Text style={styles.profileText}>Address: {profileData.address}</Text>
+                        <Text style={styles.profileText}>Address: {profileData.clientAddress}</Text>
                     </View>
                     <View style={styles.profileRow}>
                         <FontAwesome name="id-card" size={24} color="#fff" style={styles.icon} />
-                        <Text style={styles.profileText}>Pan Card: {profileData.panCard}</Text>
+                        <Text style={styles.profileText}>Pan Card: {profileData.clientPanCard}</Text>
                     </View>
                     <View style={styles.profileRow}>
                         <FontAwesome name="envelope" size={24} color="#fff" style={styles.icon} />
-                        <Text style={styles.profileText}>Email: {profileData.email}</Text>
+                        <Text style={styles.profileText}>Email: {profileData.clientEmail}</Text>
                     </View>
                 </View>
             </View>
-            <Footer />
+            {/* Uncomment the line below if the Footer component is not already imported */}
+            {/* <Footer /> */}
         </NativeBaseProvider>
     );
 };
@@ -133,9 +98,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#3498db', // Change the background color as needed
         padding: 20,
         alignItems: 'center',
-    },
-    footerText: {
-        color: 'white'
     },
     logoContainer: {
         width: '80%', // Adjust the width as needed
@@ -168,6 +130,11 @@ const styles = StyleSheet.create({
     profileText: {
         fontSize: 20,
         color: '#fff', // Text color
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 

@@ -1,70 +1,73 @@
-// Import necessary modules and components
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Animated, Easing, Alert } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    ImageBackground,
+    StyleSheet,
+    Animated,
+    Easing,
+    Alert,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-// Create the Login component
 const Login = () => {
     const navigation = useNavigation();
 
-    // State variables for email, password, and animation
     const [clientEmail, setClientEmail] = useState('');
     const [clientPassword, setClientPassword] = useState('');
+    console.log("Client Email", clientEmail)
+    console.log("Client Password", clientPassword)
     const [isAnimating, setAnimating] = useState(false);
 
-    // Animated value for rotation animation
     const rotateValue = useRef(new Animated.Value(0)).current;
 
-    // Function to handle the login process
     const handleLogin = async () => {
         try {
             setAnimating(true);
 
             const apiUrl = 'https://executive-grapeseed.onrender.com/api/clients';
 
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: clientEmail,
-                    password: clientPassword,
-                }),
-            });
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
 
-            if (response.ok) {
-                const userData = await response.json();
+            const apiResponse = await response.json();
 
-                // Save user data to AsyncStorage
-                await AsyncStorage.setItem('userData', JSON.stringify(userData));
+            const user = apiResponse.find(
+                (element) => element.clientEmail === clientEmail
+            );
 
-                Animated.timing(rotateValue, {
-                    toValue: 1,
-                    duration: 1000,
-                    easing: Easing.ease,
-                    useNativeDriver: false,
-                }).start(() => {
+            if (user) {
+                if (user.clientpassword === clientPassword) {
+                    // Save user data to AsyncStorage
+                    await AsyncStorage.setItem('userId', user._id);
+
+                    Animated.timing(rotateValue, {
+                        toValue: 1,
+                        duration: 1000,
+                        easing: Easing.ease,
+                        useNativeDriver: false,
+                    }).start(() => {
+                        setAnimating(false);
+                        rotateValue.setValue(0);
+
+                        // Navigate to the 'Dashboard' screen or any other screen upon successful login
+                        navigation.navigate('Dashboard', {
+                            email: clientEmail,
+                            // You can pass other data to the Dashboard screen if needed
+                        });
+                    });
+                } else {
+                    Alert.alert('Login Failed', 'Invalid password. Please try again.');
                     setAnimating(false);
-                    rotateValue.setValue(0);
-
-                    // Navigate to the 'Dashboard' screen upon successful login
-                    Alert.alert('Login successful!', 'Welcome to the Dashboard', [
-                        {
-                            text: 'OK',
-                            onPress: () => {
-                                // You can pass user data to the Dashboard screen if needed
-                                navigation.navigate('Dashboard', { userData });
-                            },
-                        },
-                    ]);
-                });
+                }
             } else {
-                // If the entered credentials are incorrect, show an error message
-                Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
+                Alert.alert('Login Failed', 'Email not found. Please try again.');
                 setAnimating(false);
             }
         } catch (error) {
@@ -73,13 +76,11 @@ const Login = () => {
         }
     };
 
-    // Animated value for rotation animation
     const rotateInterpolation = rotateValue.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '360deg'],
     });
 
-    // Render the UI components
     return (
         <ImageBackground style={styles.backgroundImage}>
             <View style={styles.container}>
@@ -106,7 +107,11 @@ const Login = () => {
                     />
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isAnimating}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleLogin}
+                    disabled={isAnimating}
+                >
                     {isAnimating ? (
                         <Animated.View style={{ transform: [{ rotate: rotateInterpolation }] }}>
                             <Icon name="check" size={30} color="white" />
@@ -120,7 +125,6 @@ const Login = () => {
     );
 };
 
-// Styles for the components
 const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
@@ -176,5 +180,4 @@ const styles = StyleSheet.create({
     },
 });
 
-// Export the Login component
 export default Login;
