@@ -43,9 +43,9 @@ const CustomerDetailsScreen = () => {
                     type: "image/jpeg",
                     name: "serviceImage.jpg",
                 });
-                formData.append("path", imageInfo.uri);  // Add path to the formData
-                formData.append("filename", "serviceImage.jpg");  // Add filename to the formData
-    
+                formData.append("path", "c/drive/vedant/dekstop");  // Add path to the formData
+                formData.append("filename", "nature image");  // Add filename to the formData
+        
                 const response = await fetch("https://executive-grapeseed.onrender.com/api/enquiry", {
                     method: "POST",
                     body: formData,
@@ -54,10 +54,10 @@ const CustomerDetailsScreen = () => {
                         "Content-Type": "multipart/form-data",
                     },
                 });
-    
+        
                 const data = await response.json();
                 console.log("Server Response:", data);
-    
+        
                 if (data._id) {
                     console.log("Image uploaded Successfully:", data._id);
                     showAlert("Service Added Successfully", "success");
@@ -71,6 +71,7 @@ const CustomerDetailsScreen = () => {
             showAlert("Error adding service", "error");
         }
     };
+    
     
     
 

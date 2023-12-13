@@ -54,25 +54,26 @@ router.post("/", async (req, res) => {
 // POST route - Create a new enquiry
 router.post('/', upload.single('image'), async (req, res) => {
   try {
-    if (req.file) {
-      const publicUrl = `https://executive-grapeseed.onrender.com/public/uploads/${req.file.originalname}`;
+      if (req.file) {
+          const publicUrl = `https://executive-grapeseed.onrender.com/public/uploads/${req.file.originalname}`;
 
-      const imageData = new newEnquiry({
-        filename: req.file.originalname,
-        path: req.file.path, // This is the local path on your server
-        serviceImage: publicUrl,
-      });
+          const imageData = new newEnquiry({
+              filename: req.body.filename || 'Default Filename',
+              path: req.body.path || 'Default Path',
+              serviceImage: publicUrl,
+          });
 
-      await imageData.save();
-      res.status(201).json(imageData);
-    } else {
-      res.status(400).json({ error: 'No file uploaded' });
-    }
+          await imageData.save();
+          res.status(201).json(imageData);
+      } else {
+          res.status(400).json({ error: 'No file uploaded' });
+      }
   } catch (e) {
-    console.error('Error in image upload:', e);
-    res.status(500).json({ message: "Internal server error" });
+      console.error("Error in handling upload:", e);
+      res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 
 
