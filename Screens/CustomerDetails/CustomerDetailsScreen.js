@@ -92,6 +92,10 @@ const CustomerDetailsScreen = ({ navigation }) => {
     const [isOpenNomineeInfo, setIsOpenNomineeInfo] = useState(false);
     const [isOpenWorkDetails, setIsOpenWorkDetails] = useState(false);
     const [isOpenPhysicalInfo, setIsOpenPhysicalInfo] = useState(false);
+    const [selectedAadharImage, setSelectedAadharImage] = useState('');
+    const [selectedPanImage, setSelectedPanImage] = useState('');
+    const [selectedChequeImage, setSelectedChequeImage] = useState('');
+    const [selectedNomineeId, setSselectedNomineeId] = useState('');
 
     const toggleCustomerDetails = () => {
         setIsOpenCustomerDetails(!isOpenCustomerDetails);
@@ -179,7 +183,7 @@ const CustomerDetailsScreen = ({ navigation }) => {
                         Life_Cover,
                         medical_History,
                         Employeement_Status,
-                        userEmail: userData.email,
+                        // userEmail: userData.email,
                         // filename,
                         // path,
                         // serviceImage,
@@ -223,22 +227,22 @@ const CustomerDetailsScreen = ({ navigation }) => {
         }
     };
 
-    const pickImage = async () => {
-        try {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: true,
-                aspect: [4, 3],
-                quality: 1,
-            });
+    // const pickImage = async () => {
+    //     try {
+    //         let result = await ImagePicker.launchImageLibraryAsync({
+    //             mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //             allowsEditing: true,
+    //             // aspect: [4, 3],
+    //             quality: 1,
+    //         });
 
-            if (!result.cancelled) {
-                setSelectedImage(result.uri);
-            }
-        } catch (error) {
-            console.error('Error picking an image', error);
-        }
-    };
+    //         if (!result.canceled) {
+    //             setSelectedImage(result.uri);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error picking an image', error);
+    //     }
+    // };
 
     useEffect(() => {
         if (Employeement_Status) {
@@ -253,6 +257,86 @@ const CustomerDetailsScreen = ({ navigation }) => {
         }
     }, [Employeement_Status]);
 
+
+    const pickAadharImage = async () => {
+        try {
+            const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+            if (!granted) {
+                console.error('Permission to access media library not granted');
+                return;
+            }
+
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                quality: 1,
+            });
+
+            if (!result.cancelled) {
+                setSelectedAadharImage(result.uri);
+                console.log('Image Picker Result:', result);
+            }
+        } catch (error) {
+            console.error('Error picking Aadhar image', error);
+        }
+    };
+
+
+    const pickPanImage = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                // aspect: [4, 3],
+                quality: 1,
+            });
+
+            if (!result.cancelled) {
+                setSelectedPanImage(result.uri);
+            }
+        } catch (error) {
+            console.error('Error picking Pan image', error);
+        }
+    };
+
+    const pickChequeImage = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                // aspect: [4, 3],
+                quality: 1,
+            });
+
+            if (!result.cancelled) {
+                setSelectedChequeImage(result.uri);
+                console.log('Nominee ID image', result)
+            }
+        } catch (error) {
+            console.error('Error picking Cheque image', error);
+        }
+    };
+
+
+    const pickNomineeId = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                // aspect: [4, 3],
+                quality: 1,
+            });
+
+            if (!result.cancelled) {
+                setSselectedNomineeId(result.uri);
+                console.log('Image Picker Result:', result);
+            }
+        } catch (error) {
+            // console.error('Error picking Nominee image', error);
+        }
+    };
+
     return (
         <NativeBaseProvider>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -262,24 +346,81 @@ const CustomerDetailsScreen = ({ navigation }) => {
                         isOpen={isOpenCustomerDetails}
                         onToggle={toggleCustomerDetails}
                     >
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Pan Card"
-                            value={Pan_Card}
-                            onChangeText={(text) => setPan_Card(text)}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Aadhar Card"
-                            value={Adhar_Card}
-                            onChangeText={(text) => setAdhar_Card(text)}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Cancelled Cheque"
-                            value={Cancelled_cheque}
-                            onChangeText={(text) => setCancelled_cheque(text)}
-                        />
+                        <TouchableOpacity style={styles.button} onPress={pickAadharImage}>
+                            <Animated.Text
+                                style={[
+                                    styles.buttonText,
+                                    {
+                                        marginLeft: animatedValue.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: ['0%', '-200%'],
+                                        }),
+                                    },
+                                ]}
+                            >
+                                Upload Aadhar Image
+                            </Animated.Text>
+                        </TouchableOpacity>
+
+                        {selectedAadharImage && (
+                            <View style={[styles.previewContainer, { backgroundColor: 'lightgray' }]}>
+                                <Text style={styles.previewText}>Uploaded Aadhar Image Preview:</Text>
+                                <Image
+                                    source={{ uri: selectedAadharImage }}
+                                    style={styles.previewImage}
+                                />
+                            </View>
+                        )}
+
+
+                        <TouchableOpacity style={styles.button} onPress={pickPanImage}>
+                            <Animated.Text
+                                style={[
+                                    styles.buttonText,
+                                    {
+                                        marginLeft: animatedValue.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: ['0%', '-200%'],
+                                        }),
+                                    },
+                                ]}
+                            >
+                                Upload PAN Image
+                            </Animated.Text>
+                        </TouchableOpacity>
+                        {selectedPanImage && (
+                            <View style={styles.previewContainer}>
+                                <Text style={styles.previewText}>Uploaded PAN Image Preview:</Text>
+                                <Image source={{ uri: selectedPanImage }} style={styles.previewImage} />
+                            </View>
+                        )}
+
+                        <TouchableOpacity style={styles.button} onPress={pickChequeImage}>
+                            <Animated.Text
+                                style={[
+                                    styles.buttonText,
+                                    {
+                                        marginLeft: animatedValue.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: ['0%', '-200%'],
+                                        }),
+                                    },
+                                ]}
+                            >
+                                Upload Cancelled Cheque Image
+                            </Animated.Text>
+                        </TouchableOpacity>
+                        {selectedChequeImage && (
+                            <View style={styles.previewContainer}>
+                                <Text style={styles.previewText}>
+                                    Uploaded Cancelled Cheque Image Preview:
+                                </Text>
+                                <Image
+                                    source={{ uri: selectedChequeImage }}
+                                    style={styles.previewImage}
+                                />
+                            </View>
+                        )}
                         <ModalDropdown
                             options={['Self Employed', 'Salaried']}
                             onSelect={(index, value) => setEmployeement_Status(value)}
@@ -394,6 +535,29 @@ const CustomerDetailsScreen = ({ navigation }) => {
                             value={Nominee_Ralationship}
                             onChangeText={(text) => setNominee_Ralationship(text)}
                         />
+
+                        <TouchableOpacity style={styles.button} onPress={pickNomineeId}>
+                            <Animated.Text
+                                style={[
+                                    styles.buttonText,
+                                    {
+                                        marginLeft: animatedValue.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: ['0%', '-200%'],
+                                        }),
+                                    },
+                                ]}
+                            >
+                                Upload Nominee ID
+                            </Animated.Text>
+                        </TouchableOpacity>
+                        {selectedNomineeId && (
+                            <View style={styles.previewContainer}>
+                                <Text style={styles.previewText}>Uploaded Nominee ID Image Preview:</Text>
+                                <Image source={{ uri: selectedNomineeId }} style={styles.previewImage} />
+                            </View>
+                        )}
+
                     </CollapsibleSection>
 
                     <CollapsibleSection
@@ -416,6 +580,12 @@ const CustomerDetailsScreen = ({ navigation }) => {
                         <TextInput
                             style={styles.input}
                             placeholder="Industry Name"
+                            value={Industry_Name}
+                            onChangeText={(text) => setIndustry_Name(text)}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Desigination"
                             value={Industry_Name}
                             onChangeText={(text) => setIndustry_Name(text)}
                         />
@@ -571,7 +741,7 @@ const styles = {
         width: 200,
         height: 200,
         resizeMode: 'cover',
-        // Add any additional styles for the preview image here
+
     },
     footerText: {
         color: 'white',
