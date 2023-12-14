@@ -14,7 +14,7 @@ const EnquirySchema = new mongoose.Schema({
     type: String,
     // required : true 
   },
-  uploaded_image: String,
+  
   name: {
     type: String,
     // required :true

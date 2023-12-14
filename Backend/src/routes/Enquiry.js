@@ -35,7 +35,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST route - Create a new enquiry
+
 // POST route - Create a new enquiry
 router.post("/", async (req, res) => {
   const enquiry = new newEnquiry(req.body);
@@ -51,29 +51,113 @@ router.post("/", async (req, res) => {
 
 
 
-// POST route - Create a new enquiry
-router.post('/', upload.single('image'), async (req, res) => {
+// POST route to add a new enquiry
+router.post("/addEnquiry", async (req, res) => {
+  const {
+    Pan_Card,
+    Adhar_Card,
+    Cancelled_cheque,
+    uploaded_image,
+    name,
+    mobile_nu,
+    Alternative_Mobile,
+    Mother_Name,
+    Email,
+    Last_Education,
+    Married_Status,
+    Nominee_Name,
+    Nominee_DOB,
+    Nominee_Ralationship,
+    Company_Name,
+    Annual_Income,
+    Industry_Name,
+    Height,
+    Weight,
+    Life_Cover,
+    medical_History,
+    Employeement_Status,
+    Enquiry_Date,
+    filename,
+    path,
+    serviceImage,
+    Executive_Id,
+    Enquiry_Status
+  } = req.body;
+
   try {
-      if (req.file) {
-          const publicUrl = `https://executive-grapeseed.onrender.com/public/uploads/${req.file.originalname}`;
+    // Create a new enquiry instance
+    const newEnquiry = new NewEnquiry({
+      Pan_Card,
+      Adhar_Card,
+      Cancelled_cheque,
+      uploaded_image,
+      name,
+      mobile_nu,
+      Alternative_Mobile,
+      Mother_Name,
+      Email,
+      Last_Education,
+      Married_Status,
+      Nominee_Name,
+      Nominee_DOB,
+      Nominee_Ralationship,
+      Company_Name,
+      Annual_Income,
+      Industry_Name,
+      Height,
+      Weight,
+      Life_Cover,
+      medical_History,
+      Employeement_Status,
+      Enquiry_Date,
+      filename,
+      path,
+      serviceImage,
+      Executive_Id,
+      Enquiry_Status
+    });
 
-          const imageData = new newEnquiry({
-              filename: req.body.filename || 'Default Filename',
-              path: req.body.path || 'Default Path',
-              serviceImage: publicUrl,
-          });
+    // Save the new enquiry to the database
+    const savedEnquiry = await newEnquiry.save();
 
-          await imageData.save();
-          res.status(201).json(imageData);
-      } else {
-          res.status(400).json({ error: 'No file uploaded' });
-      }
-  } catch (e) {
-      console.error("Error in handling upload:", e);
-      res.status(500).json({ message: "Internal server error" });
+    // Respond with the saved enquiry
+    res.status(201).json(savedEnquiry);
+  } catch (error) {
+    console.error("Error creating enquiry:", error);
+
+    // Handle different types of errors
+    if (error.name === 'ValidationError') {
+      // Handle Mongoose validation error
+      return res.status(400).json({ message: error.message });
+    }
+
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
+
+// POST route - Create a new enquiry
+router.post('/', upload.single('image'), async (req, res) => {
+  try {
+    if (req.file) {
+      const publicUrl = `https://executive-grapeseed.onrender.com/public/uploads/${req.file.originalname}`;
+
+      const imageData = new newEnquiry({
+        filename: req.file.originalname,
+        path: req.file.path, // This is the local path on your server
+        serviceImage: publicUrl,
+      });
+
+      await imageData.save();
+      res.status(201).json(imageData);
+    } else {
+      res.status(400).json({ error: 'No file uploaded' });
+    }
+  } catch (e) {
+    console.error('Error in image upload:', e);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 
 
