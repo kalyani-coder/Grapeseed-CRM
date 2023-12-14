@@ -18,9 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const CustomerDetailsScreen = () => {
-    const [selectedFile, setSelectedFile] = useState(null);
-    // const [serviceName, setServiceName] = useState("");
+
 
 
 
@@ -467,7 +465,7 @@ const CustomerDetailsScreen = ({ navigation }) => {
         </NativeBaseProvider>
     );
 };
-const styles = {
+const styles = StyleSheet.create({
     scrollContainer: {
         flexGrow: 1,
     },
@@ -572,7 +570,7 @@ const styles = {
         // Add any additional styles for the preview image here
     },
     footerText: {
-        color: 'white',
+        color: 'white'
     },
-
+})
 export default CustomerDetailsScreen;
