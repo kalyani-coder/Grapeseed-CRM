@@ -36,39 +36,44 @@ router.get("/", async (req, res) => {
 });
 
 // POST route - Create a new enquiry
+// POST route - Create a new enquiry
 router.post("/", async (req, res) => {
   const enquiry = new newEnquiry(req.body);
 
   try {
     const newEnquiryRecord = await enquiry.save();
-    res.status(201).json(newEnquiryRecord);
+    const responseData = await newEnquiry.findById(newEnquiryRecord._id);
+    res.status(201).json(responseData);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
 
 
+
+// POST route - Create a new enquiry
 router.post('/', upload.single('image'), async (req, res) => {
   try {
-    if (req.file) {
-      const publicUrl = `https://executive-grapeseed.onrender.com/public/uploads/${req.file.originalname}`;
-       
-      const imageData = new Service({
-        filename: req.file.originalname,
-        path: req.file.path,
-        serviceImage: publicUrl,
-        
-      });
+      if (req.file) {
+          const publicUrl = `https://executive-grapeseed.onrender.com/public/uploads/${req.file.originalname}`;
 
-      await imageData.save();
-      res.status(201).json(imageData);
-    } else {
-      res.status(400).json({ error: 'No file uploaded' });
-    }
+          const imageData = new newEnquiry({
+              filename: req.body.filename || 'Default Filename',
+              path: req.body.path || 'Default Path',
+              serviceImage: publicUrl,
+          });
+
+          await imageData.save();
+          res.status(201).json(imageData);
+      } else {
+          res.status(400).json({ error: 'No file uploaded' });
+      }
   } catch (e) {
-    res.status(500).json({ message: "Internal server error"});
+      console.error("Error in handling upload:", e);
+      res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 
 
