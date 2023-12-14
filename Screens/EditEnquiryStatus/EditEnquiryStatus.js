@@ -1,3 +1,21 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Linking } from 'react-native';
 import { Card, Title, Paragraph } from 'react-native-paper';
@@ -142,9 +160,9 @@ const EditEnquiryStatus = () => {
                 <Paragraph>Life Cover: {data.Life_Cover}</Paragraph>
                 <Paragraph>Medical History: {data.medical_History}</Paragraph>
                 <Paragraph>Employment Status: {data.Employeement_Status}</Paragraph>
-                <Paragraph>Filename: {data.filename}</Paragraph>
+                {/* <Paragraph>Filename: {data.filename}</Paragraph>
                 <Paragraph>Path: {data.path}</Paragraph>
-                <Paragraph>Service Image: {data.serviceImage}</Paragraph>
+                <Paragraph>Service Image: {data.serviceImage}</Paragraph> */}
 
                 <View style={styles.dropdownContainer}>
                     <ModalDropdown
@@ -251,3 +269,7 @@ const styles = StyleSheet.create({
 });
 
 export default EditEnquiryStatus;
+
+
+
+

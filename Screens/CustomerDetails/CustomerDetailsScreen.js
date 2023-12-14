@@ -9,6 +9,7 @@ import {
     Alert,
     ScrollView,
     Image,
+    StyleSheet,
 } from 'react-native';
 import { HStack, Pressable, Center, Icon, NativeBaseProvider } from 'native-base';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -286,7 +287,7 @@ const CustomerDetailsScreen = ({ navigation }) => {
                             dropdownTextStyle={{ fontSize: 16 }}
                             dropdownIconStyle={styles.dropdownIcon}
                         />
-                        <TouchableOpacity style={styles.button} onPress={handleFilePick}>
+                        {/* <TouchableOpacity style={styles.button} onPress={handleFilePick}>
                             <Animated.Text
                                 style={[
                                     styles.buttonText,
@@ -304,7 +305,7 @@ const CustomerDetailsScreen = ({ navigation }) => {
                                         ? 'Upload Last 3 Months Salary'
                                         : 'Upload Photograph'}
                             </Animated.Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </CollapsibleSection>
 
                     <CollapsibleSection

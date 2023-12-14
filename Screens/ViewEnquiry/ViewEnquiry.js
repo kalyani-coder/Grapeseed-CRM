@@ -107,9 +107,9 @@ const ViewInquiryPage = () => {
                 <Paragraph>Life Cover: {data.Life_Cover}</Paragraph>
                 <Paragraph>Medical History: {data.medical_History}</Paragraph>
                 <Paragraph>Employment Status: {data.Employeement_Status}</Paragraph>
-                <Paragraph>Filename: {data.filename}</Paragraph>
+                {/* <Paragraph>Filename: {data.filename}</Paragraph>
                 <Paragraph>Path: {data.path}</Paragraph>
-                <Paragraph>Service Image: {data.serviceImage}</Paragraph>
+                <Paragraph>Service Image: {data.serviceImage}</Paragraph> */}
 
             </>
         );

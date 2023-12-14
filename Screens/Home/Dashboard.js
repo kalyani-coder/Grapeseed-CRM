@@ -105,7 +105,7 @@ export default function Dashboard() {
         <View style={styles.contentContainer}>
           {/* Image Section */}
           <Image
-            source={{ uri: 'https://finvestfox.com/wp-content/uploads/2020/09/mutual-fund-768x432.jpg' }}
+            source={require('../../assets/gapeseed-logo.png')}
             alt='img'
             style={styles.image}
           />
