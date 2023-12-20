@@ -84,7 +84,7 @@ function Footer() {
 const EditEnquiryStatus = () => {
     const [expandedCards, setExpandedCards] = useState([]);
     const [inquiryData, setInquiryData] = useState([]);
-    const apiUrl = 'https://executive-grapeseed.onrender.com/api/enquiry';
+    const apiUrl = 'https://grapeseed-executive.onrender.com/api/enquiry';
 
     useEffect(() => {
         fetchData();

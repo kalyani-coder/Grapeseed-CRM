@@ -25,6 +25,10 @@ function Footer() {
     } else if (index === 1) {
       navigation.navigate('ProfilePage');
     }
+    else if (index === 2) {
+      // Open phone settings
+      Linking.openSettings();
+    }
     // Add more navigation logic for other buttons if needed
   };
 

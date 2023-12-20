@@ -44,6 +44,10 @@ function Footer() {
         } else if (index === 1) {
             navigation.navigate('ProfilePage'); // Navigate to the "ProfilePage" screen
         }
+        else if (index === 2) {
+            // Open phone settings
+            Linking.openSettings();
+        }
         // Add more navigation logic for other buttons if needed
     };
 
@@ -148,7 +152,7 @@ const CustomerDetailsScreen = ({ navigation }) => {
             const userData = JSON.parse(userDataString);
 
             const response = await fetch(
-                'https://executive-grapeseed.onrender.com/api/enquiry',
+                'https://grapeseed-executive.onrender.com/api/enquiry',
                 {
                     method: 'POST',
                     headers: {

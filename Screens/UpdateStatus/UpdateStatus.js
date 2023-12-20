@@ -74,7 +74,7 @@ const EditEnquiryPage = () => {
     const [status, setStatus] = useState('');
     const [enquiryId, setEnquiryId] = useState('');
     const [showDetailsMap, setShowDetailsMap] = useState({});
-    const apiUrl = 'https://executive-grapeseed.onrender.com/api/enquiry';
+    const apiUrl = 'https://grapeseed-executive.onrender.com/api/enquiry';
 
     useEffect(() => {
         fetchData();
