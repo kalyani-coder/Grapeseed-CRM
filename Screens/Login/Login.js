@@ -29,7 +29,7 @@ const Login = () => {
         try {
             setAnimating(true);
 
-            const apiUrl = 'https://executive-grapeseed.onrender.com/api/clients';
+            const apiUrl = 'https://grapeseed-executive.onrender.com/api/clients';
 
             const response = await fetch(apiUrl);
             if (!response.ok) {
