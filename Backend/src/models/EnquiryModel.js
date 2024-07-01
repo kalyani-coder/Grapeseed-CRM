@@ -100,6 +100,9 @@ const EnquirySchema = new mongoose.Schema({
   Executive_Id: {
     type: String
   },
+  Executive_Name : {
+    type : String
+  },
 
   Enquiry_Status: {
     type: String

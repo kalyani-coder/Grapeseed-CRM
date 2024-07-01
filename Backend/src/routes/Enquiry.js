@@ -59,6 +59,7 @@ router.post("/addEnquiry", async (req, res) => {
     Cancelled_cheque,
     uploaded_image,
     name,
+
     mobile_nu,
     Alternative_Mobile,
     Mother_Name,
@@ -86,12 +87,13 @@ router.post("/addEnquiry", async (req, res) => {
 
   try {
     // Create a new enquiry instance
-    const newEnquiry = new NewEnquiry({
+    const newEnquiry = new newEnquiry({
       Pan_Card,
       Adhar_Card,
       Cancelled_cheque,
       uploaded_image,
       name,
+
       mobile_nu,
       Alternative_Mobile,
       Mother_Name,
@@ -140,7 +142,7 @@ router.post("/addEnquiry", async (req, res) => {
 router.post('/', upload.single('image'), async (req, res) => {
   try {
     if (req.file) {
-      const publicUrl = `https://executive-grapeseed.onrender.com/public/uploads/${req.file.originalname}`;
+      const publicUrl = `http://localhost:4000/public/uploads/${req.file.originalname}`;
 
       const imageData = new newEnquiry({
         filename: req.file.originalname,
@@ -211,5 +213,19 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+router.get("/executive/:executiveId", async (req, res) => {
+  try {
+
+    const executiveId = req.params.executiveId
+    const data = await newEnquiry.find({ Executive_Id: executiveId})
+    if(!data){
+      return res.status(404).json({message : "Data not found by this Id"})
+    }
+    res.status(201).json(data)
+  } catch (e) {
+    res.status(500).json({ message: "Internal server error" })
+  }
+})
 
 module.exports = router;
