@@ -15,8 +15,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-
-
 // GET route - Retrieve all enquiries
 router.get("/", async (req, res) => {
   try {
@@ -160,9 +158,6 @@ router.post('/', upload.single('image'), async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
-
-
 
 
 // PATCH route - Update an enquiry's information
