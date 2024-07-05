@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const Client = require("../models/ExecutiveLoginModel"); // Adjust the path as needed
-const bcrypt = require('bcrypt')
+const Client = require("../models/ExecutiveLoginModel");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const jwtSecret = 'grapseeds';
+
 // Page: Get all clients
 router.get("/", async (req, res) => {
   try {
@@ -62,6 +65,49 @@ router.post('/', async (req, res) => {
     res.status(500).send({ message: 'Server error', error: error.message });
   }
 });
+
+// Login Route for the Clients 
+router.post('/login', async (req, res) => {
+  try {
+    const { clientEmail, clientPassword } = req.body;
+
+    // Find the client by email
+    const client = await Client.findOne({ clientEmail });
+    if (!client) {
+      return res.status(400).send({ message: 'Invalid email or password' });
+    }
+
+    // Check if the password matches
+    const isMatch = await bcrypt.compare(clientPassword, client.clientPassword);
+    if (!isMatch) {
+      return res.status(400).send({ message: 'Invalid email or password' });
+    }
+
+    // Create a JWT token
+    const token = jwt.sign({ id: client._id }, jwtSecret, );
+
+    // Respond with the token and client ID
+    res.status(200).send({ token, id: client._id, email: client.clientEmail });
+
+  } catch (error) {
+    res.status(500).send({ message: 'Server error', error: error.message });
+  }
+});
+
+
+
+router.delete("/:id" , async(req, res) =>{
+  try{
+    const id = req.params.id
+    const deletedClients = await Client.findByIdAndDelete(id)
+    if(!deletedClients){
+      return res.status(404).json({message : "Internla server error"})
+    }
+    res.status(201).json({message : "Client Deleted Successfully"})
+  }catch(e){
+    res.status(500).json({messsage : "Internla server error "})
+  }
+})
 
 
 // router.get("/login", async (req, res) => {
