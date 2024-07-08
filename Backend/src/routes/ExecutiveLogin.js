@@ -96,7 +96,6 @@ router.post('/', async (req, res) => {
 //   }
 // });
 
-
 router.post('/login', async (req, res) => {
   try {
     const { clientEmail, clientPassword } = req.body;
@@ -120,6 +119,7 @@ router.post('/login', async (req, res) => {
     res.status(200).send({ token, client: { id: client._id, email: client.clientEmail } });
 
   } catch (error) {
+    console.error('Error during login:', error); // Log the error
     res.status(500).send({ message: 'Server error', error: error.message });
   }
 });
