@@ -32,7 +32,7 @@ router.get("/:field/:value", async (req, res) => {
   }
 });
 
-// POST route to add a new client
+// Register Client POST route to add a new client
 router.post('/', async (req, res) => {
   try {
     // Decrypt the password using bcrypt

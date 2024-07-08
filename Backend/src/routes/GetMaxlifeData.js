@@ -22,6 +22,36 @@ router.get('/', async (req, res) => {
     }
 });
 
+// DELETE ROUTE BY ID 
+router.delete("/:id" , async(req, res) => {
+    try{
+        const id = req.params.id
+        const deletedData = await MaxLife_Data.findByIdAndDelete(id)
+        if(!deletedData){
+            return res.status(404).json({message : "Id Not found"})
+        }
+        res.status(200).json({message : "Data Successfully deleted"})
 
+    }catch(e){
+        res.status(500).json({message : "Internal server error"})
+    }
+})
+
+// GET bY ALL VALUES 
+router.get("/:field/:value", async (req, res) => {
+    const field = req.params.field;
+    const value = req.params.value.replace("_", " ");
+    if (value && field) {
+      try {
+        const allData = await MaxLife_Data.find({ [field]: value });
+        res.json(allData);
+      } catch (e) {
+        res.status(400).json({ message: "Bad request" });
+      }
+    } else {
+      res.status(400).json({ message: "Bad request" });
+    }
+  });
+  
 
 module.exports = router
