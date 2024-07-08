@@ -69,6 +69,34 @@ router.post('/', async (req, res) => {
 });
 
 // Login Route for the Clients 
+// router.post('/login', async (req, res) => {
+//   try {
+//     const { clientEmail, clientPassword } = req.body;
+
+//     // Find the client by email
+//     const client = await Client.findOne({ clientEmail });
+//     if (!client) {
+//       return res.status(400).send({ message: 'Invalid email or password' });
+//     }
+
+//     // Check if the password matches
+//     const isMatch = await bcrypt.compare(clientPassword, client.clientPassword);
+//     if (!isMatch) {
+//       return res.status(400).send({ message: 'Invalid email or password' });
+//     }
+
+//     // Create a JWT token
+//     const token = jwt.sign({ id: client._id }, jwtSecret, );
+
+//     // Respond with the token and client ID
+//     res.status(200).send({ token, id: client._id, email: client.clientEmail });
+
+//   } catch (error) {
+//     res.status(500).send({ message: 'Server error', error: error.message });
+//   }
+// });
+
+
 router.post('/login', async (req, res) => {
   try {
     const { clientEmail, clientPassword } = req.body;
@@ -86,15 +114,18 @@ router.post('/login', async (req, res) => {
     }
 
     // Create a JWT token
-    const token = jwt.sign({ id: client._id }, jwtSecret, );
+    const token = jwt.sign({ id: client._id }, jwtSecret, { expiresIn: '1h' });
 
-    // Respond with the token and client ID
-    res.status(200).send({ token, id: client._id, email: client.clientEmail });
+    // Respond with the token and client details
+    res.status(200).send({ token, client: { id: client._id, email: client.clientEmail } });
 
   } catch (error) {
     res.status(500).send({ message: 'Server error', error: error.message });
   }
 });
+
+
+
 
 // Delete route 
 router.delete("/:id" , async(req, res) =>{
