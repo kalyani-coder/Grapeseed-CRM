@@ -35,10 +35,6 @@ router.get("/:field/:value", async (req, res) => {
 // Register Client POST route to add a new client
 router.post('/', async (req, res) => {
   try {
-    // Decrypt the password using bcrypt
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.clientPassword, salt);
-
     // Create a new client object
     const client = new Client({
       clientName: req.body.clientName,
@@ -46,7 +42,7 @@ router.post('/', async (req, res) => {
       clientPhone: req.body.clientPhone,
       clientAddress: req.body.clientAddress,
       clientPanCard: req.body.clientPanCard,
-      clientPassword: hashedPassword
+      clientPassword: req.body.clientPassword // No hashing, storing as plain text
     });
 
     // Save the client to the database
@@ -57,7 +53,7 @@ router.post('/', async (req, res) => {
     // If validation errors occur, respond with the error messages
     if (error.name === 'ValidationError') {
       let messages = {};
-      for (field in error.errors) {
+      for (let field in error.errors) {
         messages[field] = error.errors[field].message;
       }
       return res.status(400).send({ message: 'Validation failed', errors: messages });
@@ -67,6 +63,7 @@ router.post('/', async (req, res) => {
     res.status(500).send({ message: 'Server error', error: error.message });
   }
 });
+
 
 // Login Route for the Clients 
 // router.post('/login', async (req, res) => {
@@ -96,6 +93,7 @@ router.post('/', async (req, res) => {
 //   }
 // });
 
+
 router.post('/login', async (req, res) => {
   try {
     const { clientEmail, clientPassword } = req.body;
@@ -107,8 +105,11 @@ router.post('/login', async (req, res) => {
     }
 
     // Check if the password matches
-    const isMatch = await bcrypt.compare(clientPassword, client.clientPassword);
-    if (!isMatch) {
+    if (!clientPassword || !client.clientPassword) {
+      return res.status(400).send({ message: 'Password is required' });
+    }
+
+    if (clientPassword !== client.clientPassword) {
       return res.status(400).send({ message: 'Invalid email or password' });
     }
 
@@ -123,6 +124,7 @@ router.post('/login', async (req, res) => {
     res.status(500).send({ message: 'Server error', error: error.message });
   }
 });
+
 
 
 
