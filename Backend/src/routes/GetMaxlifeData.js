@@ -52,6 +52,25 @@ router.get("/:field/:value", async (req, res) => {
       res.status(400).json({ message: "Bad request" });
     }
   });
+
+
+
+  // DELTE ALL COLLECTION IN DB 
   
+  // router.delete("/", async (req, res) => {
+  //   try {
+  //     const deletedData = await MaxLife_Data.deleteMany();
+  
+  //     if (!deletedData.deletedCount) {
+  //       return res.status(404).json({ message: "No data found to delete" });
+  //     }
+  
+  //     res.status(200).json({ message: "Data successfully deleted" });
+  //   } catch (error) {
+  //     console.error('Error deleting data:', error);
+  //     res.status(500).json({ message: "Internal server error", error: error.message });
+  //   }
+  // });
+
 
 module.exports = router
