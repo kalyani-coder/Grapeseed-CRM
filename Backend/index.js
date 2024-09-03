@@ -4,8 +4,8 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser');
 const cors = require('cors')
 const multer = require('multer');
-const port = process.env.PORT || 4000
 require('dotenv').config()
+const port = process.env.PORT || 4000
 
 // middlewares 
 const app = express();
