@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
   const upload = multer({ storage: storage });
 
   
-  mongoose.connect(process.env.NEW_DB_URI)
+  mongoose.connect(process.env.SERVER_DB)
   .then(() => {
       console.log('DB connection successful');
   })
