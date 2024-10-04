@@ -174,6 +174,36 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
+router.patch("/updateKycStatus/:id/executive/:Executive_Id", async (req, res) => {
+  try {
+    const { id, Executive_Id } = req.params;
+
+    // Fetch the enquiry first to check the current kyc_status
+    const enquiry = await newEnquiry.findOne({ _id: id, Executive_Id: Executive_Id });
+
+    // Check if enquiry exists
+    if (!enquiry) {
+      return res.status(404).json({ message: "Enquiry not found for this customer" });
+    }
+
+    // If kyc_status is already true, do not update and return a message
+    if (enquiry.kyc_status === true) {
+      return res.status(200).json({ message: "Already KYC verified for this enquiry" });
+    }
+    // If kyc_status is false, proceed with the update
+    const updatedEnquiry = await newEnquiry.findOneAndUpdate(
+      { _id: id, Executive_Id: Executive_Id },
+      { kyc_status: req.body.kyc_status },
+      { new: true }
+    );
+
+    return res.status(200).json({ message: "Enquiry Updated Successfully", data: updatedEnquiry });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error", error });
+  }
+});
+
+
 // DELETE route - Delete an enquiry
 router.delete("/:id", async (req, res) => {
   try {
@@ -213,9 +243,9 @@ router.get("/executive/:executiveId", async (req, res) => {
   try {
 
     const executiveId = req.params.executiveId
-    const data = await newEnquiry.find({ Executive_Id: executiveId})
-    if(!data){
-      return res.status(404).json({message : "Data not found by this Id"})
+    const data = await newEnquiry.find({ Executive_Id: executiveId })
+    if (!data) {
+      return res.status(404).json({ message: "Data not found by this Id" })
     }
     res.status(201).json(data)
   } catch (e) {

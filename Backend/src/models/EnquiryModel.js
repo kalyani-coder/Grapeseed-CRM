@@ -106,8 +106,8 @@ const EnquirySchema = new mongoose.Schema({
 
   Enquiry_Status: {
     type: String
-  }
-
+  },
+  kyc_status : {type : Boolean, default: false},
 })
 
 const newEnquiry = mongoose.model('Enquiry', EnquirySchema)
